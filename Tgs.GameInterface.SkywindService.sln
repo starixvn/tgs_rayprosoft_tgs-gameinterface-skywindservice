@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService", "Tgs.GameInterface.SkywindService\Tgs.GameInterface.SkywindService.csproj", "{8A5B5A9E-D4EA-4F93-9695-F9D4CDC58750}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService.Core", "Tgs.GameInterface.SkywindService.Core\Tgs.GameInterface.SkywindService.Core.csproj", "{52F9B736-8E27-4F3C-8A6E-6E8067587EBF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "方案項目", "方案項目", "{57565475-2900-4C06-A797-A15F9B44401D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		CodeMaid.config = CodeMaid.config
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService.Core.UnitTest", "Tgs.GameInterface.SkywindService.Core.UnitTest\Tgs.GameInterface.SkywindService.Core.UnitTest.csproj", "{7CF12732-125E-4923-8EB4-5CAE7DE44EE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameInterface.SkywindService.Common", "Tgs.GameInterface.SkywindService.Common\Tgs.GameInterface.SkywindService.Common.csproj", "{2AE69284-C445-4638-A2E4-816E42FC8B0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameInterface.SkywindService.Client", "Tgs.GameInterface.SkywindService.Client\Tgs.GameInterface.SkywindService.Client.csproj", "{F273F91E-EDCF-443C-9C0F-24E62AC14E08}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A5B5A9E-D4EA-4F93-9695-F9D4CDC58750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5B5A9E-D4EA-4F93-9695-F9D4CDC58750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A5B5A9E-D4EA-4F93-9695-F9D4CDC58750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A5B5A9E-D4EA-4F93-9695-F9D4CDC58750}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52F9B736-8E27-4F3C-8A6E-6E8067587EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52F9B736-8E27-4F3C-8A6E-6E8067587EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52F9B736-8E27-4F3C-8A6E-6E8067587EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52F9B736-8E27-4F3C-8A6E-6E8067587EBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CF12732-125E-4923-8EB4-5CAE7DE44EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CF12732-125E-4923-8EB4-5CAE7DE44EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CF12732-125E-4923-8EB4-5CAE7DE44EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CF12732-125E-4923-8EB4-5CAE7DE44EE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AE69284-C445-4638-A2E4-816E42FC8B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AE69284-C445-4638-A2E4-816E42FC8B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AE69284-C445-4638-A2E4-816E42FC8B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AE69284-C445-4638-A2E4-816E42FC8B0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F273F91E-EDCF-443C-9C0F-24E62AC14E08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F273F91E-EDCF-443C-9C0F-24E62AC14E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F273F91E-EDCF-443C-9C0F-24E62AC14E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F273F91E-EDCF-443C-9C0F-24E62AC14E08}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D4F946B1-AA97-4F56-A170-63A9097EA843}
+	EndGlobalSection
+EndGlobal

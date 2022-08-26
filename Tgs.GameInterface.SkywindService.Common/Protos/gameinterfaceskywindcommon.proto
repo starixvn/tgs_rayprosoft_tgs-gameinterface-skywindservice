@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option csharp_namespace = "Tgs.GameInterface.SkywindService.Common.Protos";
+
+package gameinterfaceskywindcommon;
+
+message AccessTokenMessageRequest {
+    string api_url = 1;
+    string secret_key = 2;
+    string username = 3;
+    string password = 4;
+}
