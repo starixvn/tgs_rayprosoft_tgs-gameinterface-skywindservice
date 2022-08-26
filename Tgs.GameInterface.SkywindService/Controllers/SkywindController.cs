@@ -109,13 +109,13 @@ public class SkywindController : ControllerBase
     {
         var query = new FundOutQuery(
             source.ApiUrl,
-           source.SecretKey,
-           source.Username,
-           source.Password,
-           source.ExtTrxId,
-           source.PlayerCode,
-           source.Currency,
-           source.Amount);
+            source.SecretKey,
+            source.Username,
+            source.Password,
+            source.ExtTrxId,
+            source.PlayerCode,
+            source.Currency,
+            source.Amount);
 
         var result = await service
                 .GetAsync(
@@ -158,10 +158,10 @@ public class SkywindController : ControllerBase
     {
         var query = new FundStatusQuery(
             source.ApiUrl,
-           source.SecretKey,
-           source.Username,
-           source.Password,
-           source.ExtTrxId);
+            source.SecretKey,
+            source.Username,
+            source.Password,
+            source.ExtTrxId);
 
         var result = await service
                 .GetAsync(
