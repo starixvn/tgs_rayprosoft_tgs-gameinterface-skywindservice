@@ -1,0 +1,26 @@
+﻿namespace Tgs.GameInterface.SkywindService.ViewModels;
+
+public record RoundResultViewModel(
+    bool Finished,
+     decimal? Revenu,
+     string Currency,
+     decimal? Debit,
+     decimal? Credit,
+     string RoundId,
+     string BrandId,
+     string PlayerCode,
+     string GameCode,
+     string Device,
+     decimal? Win,
+     decimal Bet,
+     decimal BalanceBefore,
+     decimal BalanceAfter,
+     string TotalEvents,
+     DateTimeOffset FirstTs,
+     DateTimeOffset? Ts,
+     bool IsTest,
+     DateTimeOffset InsertedAt,
+     string? RecoveryType,
+     decimal? TotalJpContribution,
+     decimal? TotalJpWin,
+     string AdditionalData);
