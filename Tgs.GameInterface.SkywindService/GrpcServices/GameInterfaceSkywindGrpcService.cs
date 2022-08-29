@@ -165,7 +165,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
                     Ts = result.Ts.HasValue ? result.Ts.Value.UtcDateTime.ToString("O") : string.Empty,
                     IsTest = result.IsTest,
                     InsertedAt = result.InsertedAt.UtcDateTime.ToString("O"),
-                    RecoveryType = result.RecoveryType,
+                    RecoveryType = result.RecoveryType ?? string.Empty,
                     TotalJpContribution = result.TotalJpContribution,
                     TotalJpWin = result.TotalJpWin ?? 0,
                     AdditionalData = result.AdditionalData
