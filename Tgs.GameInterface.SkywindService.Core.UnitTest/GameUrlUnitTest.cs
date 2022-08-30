@@ -7,7 +7,7 @@ using Tgs.GameInterface.SkywindService.Core.Models;
 namespace Tgs.GameInterface.SkywindService.Core.UnitTest;
 
 [TestClass]
-public class GameURLBySlotUnitTest
+public class GameUrlUnitTest
 {
     [TestMethod]
     public async Task Normal_Process()
@@ -38,7 +38,7 @@ public class GameURLBySlotUnitTest
             fakeHttpClient);
 
         var atual = await client
-                .GameURLBySlotAsync(
+                .GetGameUrlAsync(
                     apiUrl: apiUrl,
                     accessToken: accessToken,
                     playerCode: playerCode,

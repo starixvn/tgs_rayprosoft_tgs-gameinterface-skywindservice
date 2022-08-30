@@ -14,9 +14,7 @@ public interface IGameInterfaceSkywindClient
 
     ValueTask<GameRecordReply> GameRecordByUnSettleAsync(GameRecordRequest request, CancellationToken cancellationToken = default);
 
-    ValueTask<GameURLReply> GameURLByLiveAsync(GameURLByLiveRequest request, CancellationToken cancellationToken = default);
-
-    ValueTask<GameURLReply> GameURLBySlotAsync(GameURLBySlotRequest request, CancellationToken cancellationToken = default);
+    ValueTask<GameUrlReply> GameUrlAsync(GameUrlRequest request, CancellationToken cancellationToken = default);
 
     ValueTask<PlayerBalanceReply> PlayerBalanceAsync(PlayerBalanceRequest request, CancellationToken cancellationToken = default);
 

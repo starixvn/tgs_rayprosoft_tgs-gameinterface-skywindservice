@@ -12,8 +12,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
     private readonly IGetService<FundStatusQuery, FundStatusResult> _fundStatusService;
     private readonly IQueryService<GameHistoryBySettleQuery, GameHistoryResult> _gameHistoryBySettleService;
     private readonly IQueryService<GameHistoryByUnSettleQuery, GameHistoryResult> _gameHistoryByUnSettleService;
-    private readonly IGetService<GameURLByLiveQuery, GameURLResult> _gameURLByLiveService;
-    private readonly IGetService<GameURLBySlotQuery, GameURLResult> _gameURLBySlotService;
+    private readonly IGetService<GameUrlQuery, GameUrlResult> _gameUrlService;
     private readonly IGetService<PlayerBalanceQuery, PlayerBalanceResult> _playerBalanceService;
     private readonly ICommandService<PlayerCreateCommand> _playerCreateService;
 
@@ -23,8 +22,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         IGetService<FundStatusQuery, FundStatusResult> fundStatusService,
         IQueryService<GameHistoryBySettleQuery, GameHistoryResult> gameHistoryBySettleService,
         IQueryService<GameHistoryByUnSettleQuery, GameHistoryResult> gameHistoryByUnSettleService,
-        IGetService<GameURLByLiveQuery, GameURLResult> gameURLByLiveService,
-        IGetService<GameURLBySlotQuery, GameURLResult> gameURLBySlotService,
+        IGetService<GameUrlQuery, GameUrlResult> gameUrlService,
         IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
         ICommandService<PlayerCreateCommand> playerCreateService)
     {
@@ -33,8 +31,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         _fundStatusService = fundStatusService ?? throw new ArgumentNullException(nameof(fundStatusService));
         _gameHistoryBySettleService = gameHistoryBySettleService ?? throw new ArgumentNullException(nameof(gameHistoryBySettleService));
         _gameHistoryByUnSettleService = gameHistoryByUnSettleService ?? throw new ArgumentNullException(nameof(gameHistoryByUnSettleService));
-        _gameURLByLiveService = gameURLByLiveService ?? throw new ArgumentNullException(nameof(gameURLByLiveService));
-        _gameURLBySlotService = gameURLBySlotService ?? throw new ArgumentNullException(nameof(gameURLBySlotService));
+        _gameUrlService = gameUrlService ?? throw new ArgumentNullException(nameof(gameUrlService));
         _playerBalanceService = playerBalanceService ?? throw new ArgumentNullException(nameof(playerBalanceService));
         _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
     }
@@ -233,33 +230,9 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         return reply;
     }
 
-    public override async Task<GameURLReply> GameURLByLive(GameURLByLiveRequest request, ServerCallContext context)
+    public override async Task<GameUrlReply> GameUrl(GameUrlRequest request, ServerCallContext context)
     {
-        var query = new GameURLByLiveQuery(
-            new Uri(request.ApiUrl),
-            request.SecretKey,
-            request.Username,
-            request.Password,
-            request.PlayerCode,
-            request.AuthToken,
-            request.Language);
-
-        var result = await _gameURLByLiveService
-                    .GetAsync(
-                        query,
-                        context.CancellationToken)
-                    .ConfigureAwait(false);
-
-        return new GameURLReply
-        {
-            IsPlayer = result.IsPlayer,
-            GameUrl = result.GameUrl
-        };
-    }
-
-    public override async Task<GameURLReply> GameURLBySlot(GameURLBySlotRequest request, ServerCallContext context)
-    {
-        var query = new GameURLBySlotQuery(
+        var query = new GameUrlQuery(
             new Uri(request.ApiUrl),
             request.SecretKey,
             request.Username,
@@ -268,13 +241,13 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.GameCode,
             request.Language);
 
-        var result = await _gameURLBySlotService
+        var result = await _gameUrlService
                     .GetAsync(
                         query,
                         context.CancellationToken)
                     .ConfigureAwait(false);
 
-        return new GameURLReply
+        return new GameUrlReply
         {
             IsPlayer = result.IsPlayer,
             GameUrl = result.GameUrl

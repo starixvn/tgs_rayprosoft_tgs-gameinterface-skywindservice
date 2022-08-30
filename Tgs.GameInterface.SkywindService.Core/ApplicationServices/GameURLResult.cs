@@ -1,5 +1,5 @@
 ﻿namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 
-public record GameURLResult(
+public record GameUrlResult(
     bool IsPlayer,
     string GameUrl);

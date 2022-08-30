@@ -15,8 +15,7 @@ service GameInterfaceSkywindService {
   rpc FundOut(FundRequest) returns (FundReply);
   rpc FundIn (FundRequest) returns (FundReply);
   rpc FundStatus(FundStatusRequest) returns (FundStatusReply);
-  rpc GameURLBySlot (GameURLBySlotRequest) returns (GameURLReply);
-  rpc GameURLByLive (GameURLByLiveRequest) returns (GameURLReply);
+  rpc GameUrl (GameUrlRequest) returns (GameUrlReply);
   rpc GameRecordBySettle (GameRecordRequest) returns (GameRecordReply);
   rpc GameRecordByUnSettle (GameRecordRequest) returns (GameRecordReply);
 }
@@ -59,23 +58,13 @@ message FundStatusRequest {
 	string ext_trx_id = 5;
 }
 
-message GameURLBySlotRequest {
+message GameUrlRequest {
 	string api_url = 1;
 	string secret_key = 2;
 	string username = 3;
 	string password = 4;
 	string player_code = 5;
 	string game_code = 6;
-	string language = 7;
-}
-
-message GameURLByLiveRequest {
-	string api_url = 1;
-	string secret_key = 2;
-	string username = 3;
-	string password = 4;
-	string player_code = 5;
-	string auth_token = 6;
 	string language = 7;
 }
 
@@ -113,7 +102,7 @@ message FundStatusReply {
 	string status = 2;
 }
 
-message GameURLReply {
+message GameUrlReply {
 	bool is_player = 1;
 	string game_url = 2;
 }

@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameInterface.SkywindService.ViewModels;
 
-public record GameURLBySlotViewModel
+public record GameUrlViewModel
 {
     public Uri ApiUrl { get; init; } = default!;
     public string SecretKey { get; init; } = default!;

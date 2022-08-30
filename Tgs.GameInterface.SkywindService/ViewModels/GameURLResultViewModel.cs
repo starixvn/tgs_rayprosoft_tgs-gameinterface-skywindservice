@@ -1,5 +1,5 @@
 ﻿namespace Tgs.GameInterface.SkywindService.ViewModels;
 
-public record GameURLResultViewModel(
+public record GameUrlResultViewModel(
     bool IsPlayer,
     string GameUrl);

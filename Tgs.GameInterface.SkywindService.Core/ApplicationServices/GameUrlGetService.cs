@@ -2,12 +2,12 @@
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 
-internal class GameURLByLiveGetService : IGetService<GameURLByLiveQuery, GameURLResult>
+internal class GameUrlGetService : IGetService<GameUrlQuery, GameUrlResult>
 {
     private readonly IAccessToken _accessToken;
     private readonly IGameApiClient _client;
 
-    public GameURLByLiveGetService(
+    public GameUrlGetService(
         IAccessToken accessToken,
         IGameApiClient client)
     {
@@ -15,7 +15,7 @@ internal class GameURLByLiveGetService : IGetService<GameURLByLiveQuery, GameURL
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<GameURLResult> GetAsync(GameURLByLiveQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<GameUrlResult> GetAsync(GameUrlQuery query, CancellationToken cancellationToken = default)
     {
         var accessToken = await _accessToken
                 .GetAsync(
@@ -27,16 +27,16 @@ internal class GameURLByLiveGetService : IGetService<GameURLByLiveQuery, GameURL
                 .ConfigureAwait(false);
 
         var response = await _client
-            .GameURLByLiveAsync(
+            .GetGameUrlAsync(
                 query.ApiUrl,
                 accessToken,
                 query.PlayerCode,
-                query.AuthToken,
+                query.GameCode,
                 query.Language,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return new GameURLResult(
+        return new GameUrlResult(
                 IsPlayer: response is not null,
                 GameUrl: response?.Url ?? string.Empty);
     }

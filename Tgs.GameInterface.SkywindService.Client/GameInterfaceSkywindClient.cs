@@ -46,16 +46,9 @@ internal class GameInterfaceSkywindClient : IGameInterfaceSkywindClient
             cancellationToken: cancellationToken)
         .ConfigureAwait(false);
 
-    public async ValueTask<GameURLReply> GameURLByLiveAsync(GameURLByLiveRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<GameUrlReply> GameUrlAsync(GameUrlRequest request, CancellationToken cancellationToken = default)
         => await _client
-        .GameURLByLiveAsync(
-            request: request,
-            cancellationToken: cancellationToken)
-        .ConfigureAwait(false);
-
-    public async ValueTask<GameURLReply> GameURLBySlotAsync(GameURLBySlotRequest request, CancellationToken cancellationToken = default)
-        => await _client
-        .GameURLBySlotAsync(
+        .GameUrlAsync(
             request: request,
             cancellationToken: cancellationToken)
         .ConfigureAwait(false);

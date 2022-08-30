@@ -336,8 +336,9 @@ public class SkywindController : ControllerBase
                HttpContext.RequestAborted);
     }
 
+
     /// <summary>
-    /// Games the URL by slot asynchronous.
+    /// Gets the game URL asynchronous.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="source">The source.</param>
@@ -347,22 +348,34 @@ public class SkywindController : ControllerBase
     ///
     ///     Post
     ///
+    ///     Live
     ///     {
     ///         "apiUrl": "https://api.gcpstg.m27613.com/",
     ///         "secretKey": "66a44892-54dc-488b-b755-1d1da4f8ad61",
     ///         "username": "PGT_brand_api_stg",
     ///         "password": "ArSg5e6CR2g1wIgB",
     ///         "playerCode": "4ucmqplxb029",
-    ///         "gameCode": "sw_888t",
+    ///         "gameCode": "sw_ro_a01bac",
+    ///         "language": "en"
+    ///     }
+    ///
+    ///     Slot
+    ///     {
+    ///         "apiUrl": "https://api.gcpstg.m27613.com/",
+    ///         "secretKey": "66a44892-54dc-488b-b755-1d1da4f8ad61",
+    ///         "username": "PGT_brand_api_stg",
+    ///         "password": "ArSg5e6CR2g1wIgB",
+    ///         "playerCode": "4ucmqplxb029",
+    ///         "gameCode": "sw_88sf",
     ///         "language": "en"
     ///     }
     /// </remarks>
-    [HttpPost("game/url/slot")]
-    public async ValueTask<GameURLResultViewModel> GameURLBySlotAsync(
-        [FromServices] IGetService<GameURLBySlotQuery, GameURLResult> service,
-        GameURLBySlotViewModel source)
+    [HttpPost("game/url")]
+    public async ValueTask<GameUrlResultViewModel> GetGameUrlAsync(
+        [FromServices] IGetService<GameUrlQuery, GameUrlResult> service,
+        GameUrlViewModel source)
     {
-        var query = new GameURLBySlotQuery(
+        var query = new GameUrlQuery(
             source.ApiUrl,
             source.SecretKey,
             source.Username,
@@ -377,53 +390,7 @@ public class SkywindController : ControllerBase
                     HttpContext.RequestAborted)
                 .ConfigureAwait(false);
 
-        return new GameURLResultViewModel(
-            result.IsPlayer,
-            result.GameUrl);
-    }
-
-    /// <summary>
-    /// Games the URL by slot asynchronous.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="source">The source.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///
-    ///     {
-    ///         "apiUrl": "https://api.gcpstg.m27613.com/",
-    ///         "secretKey": "66a44892-54dc-488b-b755-1d1da4f8ad61",
-    ///         "username": "PGT_brand_api_stg",
-    ///         "password": "ArSg5e6CR2g1wIgB",
-    ///         "playerCode": "4ucmqplxb029",
-    ///         "authToken": "1qaz2wsx3edc4rfv"
-    ///         "language": "zh-cn"
-    ///     }
-    /// </remarks>
-    [HttpPost("game/url/live")]
-    public async ValueTask<GameURLResultViewModel> GameURLByLiveAsync(
-        [FromServices] IGetService<GameURLByLiveQuery, GameURLResult> service,
-        GameURLByLiveViewModel source)
-    {
-        var query = new GameURLByLiveQuery(
-            source.ApiUrl,
-            source.SecretKey,
-            source.Username,
-            source.Password,
-            source.PlayerCode,
-            source.AuthToken,
-            source.Language);
-
-        var result = await service
-                .GetAsync(
-                    query,
-                    HttpContext.RequestAborted)
-                .ConfigureAwait(false);
-
-        return new GameURLResultViewModel(
+        return new GameUrlResultViewModel(
             result.IsPlayer,
             result.GameUrl);
     }

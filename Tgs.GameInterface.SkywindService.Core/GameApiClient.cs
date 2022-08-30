@@ -144,7 +144,7 @@ internal class GameApiClient : IGameApiClient
             : JsonSerializer.Deserialize<TransactionResponse>(ResponseMessage);
     }
 
-    public async ValueTask<GameURLBySlotResponse?> GameURLBySlotAsync(
+    public async ValueTask<GameURLBySlotResponse?> GetGameUrlAsync(
         Uri apiUrl,
         string accessToken,
         string playerCode,
@@ -157,7 +157,7 @@ internal class GameApiClient : IGameApiClient
         (bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage) = await GetAsync(
                         url,
                         accessToken,
-                        "GameURLBySlot",
+                        "GetGameUrl",
                         cancellationToken)
         .ConfigureAwait(false);
 
@@ -188,54 +188,6 @@ internal class GameApiClient : IGameApiClient
 
         return JsonSerializer
             .Deserialize<GameURLBySlotResponse>(ResponseMessage);
-    }
-
-    public async ValueTask<GameURLByLiveResponse?> GameURLByLiveAsync(
-        Uri apiUrl,
-        string accessToken,
-        string playerCode,
-        string authToken,
-        string language,
-        CancellationToken cancellationToken = default)
-    {
-        var url = new Uri(apiUrl, $"v1/players/{playerCode}/games/sw_ro_a01bac?language={language}");
-
-        (bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage) = await GetAsync(
-                        url,
-                        accessToken,
-                        "GameURLByLive",
-                        cancellationToken)
-        .ConfigureAwait(false);
-
-        if (!IsSuccess)
-        {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
-                DateTime.Now.ToString("o"),
-                $"{StatusCode}({(int)StatusCode})",
-                ResponseMessage);
-
-            try
-            {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
-                if (errorCodeResponse is null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
-                if (errorCodeResponse.Code != SkywindErrorCode.PLAYERS_CODE_ALREADY_EXISTS)
-                {
-                    throw new GameProviderResponseErrorException(ResponseMessage);
-                }
-            }
-            catch
-            {
-                throw new NetworkException(StatusCode, ResponseMessage);
-            }
-        }
-
-        return JsonSerializer
-            .Deserialize<GameURLByLiveResponse>(ResponseMessage);
     }
 
     public async ValueTask<string> GetAccessTokenAsync(

@@ -69,19 +69,11 @@ public interface IGameApiClient
         string extTrxId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<GameURLBySlotResponse?> GameURLBySlotAsync(
+    ValueTask<GameURLBySlotResponse?> GetGameUrlAsync(
         Uri apiUrl,
         string accessToken,
         string playerCode,
         string gameCode,
-        string language,
-        CancellationToken cancellationToken = default);
-
-    ValueTask<GameURLByLiveResponse?> GameURLByLiveAsync(
-        Uri apiUrl,
-        string accessToken,
-        string playerCode,
-        string authToken,
         string language,
         CancellationToken cancellationToken = default);
 
