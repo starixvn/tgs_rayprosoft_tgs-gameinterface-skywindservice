@@ -43,6 +43,12 @@ public interface IGameApiClient
         string status = "normal",
         CancellationToken cancellationToken = default);
 
+    ValueTask DeleteSessionAsync(
+        Uri apiUrl,
+        string accessToken,
+        string playerCode,
+        CancellationToken cancellationToken = default);
+
     ValueTask<TransactionResponse?> DepositAsync(
         Uri apiUrl,
         string accessToken,

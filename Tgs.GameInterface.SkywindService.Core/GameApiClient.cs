@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Mime;
 using System.Runtime.CompilerServices;
@@ -64,9 +65,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 if (errorCodeResponse == null)
                 {
@@ -123,9 +122,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 return errorCodeResponse == null
                     ? throw new NetworkException(StatusCode, ResponseMessage)
@@ -170,9 +167,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 return errorCodeResponse == null
                     ? throw new NetworkException(StatusCode, ResponseMessage)
@@ -222,9 +217,8 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
+
                 if (errorCodeResponse is null)
                 {
                     throw new NetworkException(StatusCode, ResponseMessage);
@@ -272,9 +266,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 return errorCodeResponse == null
                     ? throw new NetworkException(StatusCode, ResponseMessage)
@@ -330,9 +322,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 return errorCodeResponse == null
                     ? throw new NetworkException(StatusCode, ResponseMessage)
@@ -466,9 +456,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 if (errorCodeResponse == null)
                 {
@@ -533,9 +521,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 if (errorCodeResponse == null)
                 {
@@ -588,9 +574,7 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer
-                            .Deserialize<ErrorCodeResponse>(
-                            ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
 
                 return errorCodeResponse == null
                     ? throw new NetworkException(StatusCode, ResponseMessage)
@@ -722,5 +706,80 @@ internal class GameApiClient : IGameApiClient
         _logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
 
         return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseMessage);
+    }
+
+    private async ValueTask<(bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage)> DeleteAsync(Uri apiUrl, string accessToken, string logPrefix, CancellationToken cancellationToken = default)
+    {
+        logPrefix = $"{nameof(GameApiClient)}.{logPrefix}".ToLower();
+
+        var sw = Stopwatch.StartNew();
+
+        _client.DefaultRequestHeaders.Add("X-ACCESS-TOKEN", accessToken);
+        var httpResponseMessage = await _client.DeleteAsync(apiUrl, cancellationToken);
+
+        sw.Stop();
+
+        var responseMessage = default(string);
+
+        using (var readStream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
+        {
+            responseMessage = await readStream.ReadToEndAsync().ConfigureAwait(false) ?? string.Empty;
+        }
+
+        var logEvent = new GameApiLogEvent
+        {
+            Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+            Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+            Prefix = logPrefix,
+            ServerName = Environment.MachineName.NoLongerThan(128),
+            RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+            RequestContent = string.Empty,
+            ResponseHeaders = httpResponseMessage.Headers.ToString(),
+            ResponseContent = responseMessage.NoLongerThan(4096),
+            ResponseCode = (short)httpResponseMessage.StatusCode,
+            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+            RecordedOn = DateTimeOffset.UtcNow
+        };
+        _logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
+
+        return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseMessage);
+    }
+
+    public async ValueTask DeleteSessionAsync(
+        Uri apiUrl,
+        string accessToken,
+        string playerCode,
+        CancellationToken cancellationToken = default)
+    {
+        var url = new Uri(apiUrl, $"v1/players/{playerCode}/session");
+
+        (bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage) = await DeleteAsync(
+                        url,
+                        accessToken,
+                        "DeleteSession",
+                        cancellationToken)
+        .ConfigureAwait(false);
+
+        if (!IsSuccess)
+        {
+            try
+            {
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
+
+                if (errorCodeResponse == null)
+                {
+                    throw new NetworkException(StatusCode, ResponseMessage);
+                }
+
+                if (errorCodeResponse.Code != SkywindErrorCode.PLAYER_NOT_FOUND)
+                {
+                    throw new GameProviderResponseErrorException(ResponseMessage);
+                }
+            }
+            catch
+            {
+                throw new NetworkException(StatusCode, ResponseMessage);
+            }
+        }
     }
 }

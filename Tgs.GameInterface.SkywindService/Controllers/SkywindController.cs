@@ -336,6 +336,42 @@ public class SkywindController : ControllerBase
                HttpContext.RequestAborted);
     }
 
+    /// <summary>
+    /// Players the kick line asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="source">The source.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///
+    ///     {
+    ///         "apiUrl": "https://api.gcpstg.m27613.com/",
+    ///         "secretKey": "66a44892-54dc-488b-b755-1d1da4f8ad61",
+    ///         "username": "PGT_brand_api_stg",
+    ///         "password": "ArSg5e6CR2g1wIgB",
+    ///         "playerCode": "4ucmqplxb029"
+    ///     }
+    /// </remarks>
+    [HttpPost("players/kickline")]
+    public ValueTask PlayerKickLineAsync(
+        [FromServices] ICommandService<PlayerKickLineCommand> service,
+        PlayerKickLineViewModel source)
+    {
+        var command = new PlayerKickLineCommand(
+            source.ApiUrl,
+            source.SecretKey,
+            source.Username,
+            source.Password,
+            source.PlayerCode);
+
+        return service.ExecuteAsync(
+               command,
+               HttpContext.RequestAborted);
+    }
+
 
     /// <summary>
     /// Gets the game URL asynchronous.
