@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+import "phoenix/protobuf/decimal.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Tgs.GameInterface.SkywindService.Protos";
+
+package gameinterfaceskywindservice;
+
+// The greeting service definition.
+service GameInterfaceSkywindService {
+  // Sends a greeting
+  rpc PlayerBalance (PlayerBalanceRequest) returns (PlayerBalanceReply);
+  rpc PlayerCreate (PlayerCreateRequest) returns (BaseReply);
+  rpc FundOut(FundRequest) returns (FundReply);
+  rpc FundIn (FundRequest) returns (FundReply);
+  rpc FundStatus(FundStatusRequest) returns (FundStatusReply);
+  rpc GameUrl (GameUrlRequest) returns (GameUrlReply);
+  rpc GameRecordBySettle (GameRecordRequest) returns (GameRecordReply);
+  rpc GameRecordByUnSettle (GameRecordRequest) returns (GameRecordReply);
+}
+
+// The request message containing the user's name.
+message PlayerBalanceRequest {
+	string api_url = 1;
+	string secret_key = 2;
+	string username = 3;
+	string password = 4;
+	string player_code = 5;
+	
+}
+
+message PlayerCreateRequest {
+	string api_url = 1;
+	string secret_key = 2;
+	string username = 3;
+	string password = 4;
+	string player_code = 5;
+	string currency = 6;
+}
+
+message FundRequest {
+	string api_url = 1;
+	string secret_key = 2;
+	string username = 3;
+	string password = 4;
+	string ext_trx_id = 5;
+	string player_code = 6;
+	string currency = 7;
+	phoenix.protobuf.DecimalValue amount = 8;
+}
+
+message FundStatusRequest {
+	string api_url = 1;
+	string secret_key = 2;
+	string username = 3;
+	string password = 4;
+	string ext_trx_id = 5;
+}
+
+message GameUrlRequest {
+	string api_url = 1;
+	string secret_key = 2;
+	string username = 3;
+	string password = 4;
+	string player_code = 5;
+	string game_code = 6;
+	string language = 7;
+}
+
+message GameRecordRequest {
+	string api_url = 1;
+	string secret_key = 2;
+	string username = 3;
+	string password = 4;
+	google.protobuf.Timestamp start = 5; 
+	google.protobuf.Timestamp end = 6;
+	int32 offset = 7;
+	int32 limit = 8;
+}
+
+// The response message containing the greetings.
+message BaseReply{
+	bool status = 1;
+}
+message PlayerBalanceReply {
+	bool is_player = 1;
+	phoenix.protobuf.DecimalValue balance = 2;
+}
+
+message FundReply {
+	bool status = 1;
+	string trx_id = 2;
+    string ext_trx_id = 3;
+    string order_status = 4;
+    phoenix.protobuf.DecimalValue amount = 5;
+    phoenix.protobuf.DecimalValue balance = 6;
+}
+
+message FundStatusReply {
+	bool is_transaction = 1;
+	string status = 2;
+}
+
+message GameUrlReply {
+	bool is_player = 1;
+	string game_url = 2;
+}
+
+message GameRecordReply {
+	repeated GameRecord items = 1;
+}
+
+message GameRecord {
+	bool finished = 1;
+    phoenix.protobuf.DecimalValue revenu = 2;
+    string currency = 3;
+	phoenix.protobuf.DecimalValue debit = 4;
+	phoenix.protobuf.DecimalValue credit = 5;
+    string round_id = 6;
+    string brand_id = 7;
+    string player_code = 8;
+    string game_code = 9;
+    string device = 10;
+    phoenix.protobuf.DecimalValue win = 11;
+    phoenix.protobuf.DecimalValue bet = 12;
+    phoenix.protobuf.DecimalValue balance_before = 13;
+    phoenix.protobuf.DecimalValue balance_after = 14;
+    string total_events = 15;
+    string first_ts = 16;
+    string ts = 17;
+    bool is_test = 18;
+    string inserted_at = 19;
+    string recovery_type = 20;
+    phoenix.protobuf.DecimalValue total_jp_contribution = 21;
+    phoenix.protobuf.DecimalValue total_jp_win = 22;
+	string additional_data = 23;
+}
