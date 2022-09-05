@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices
 {
-    public record PlayerKickLineCommand(
+    public record PlayerKickCommand(
         Uri ApiUrl,
         string SecretKey,
         string Username,

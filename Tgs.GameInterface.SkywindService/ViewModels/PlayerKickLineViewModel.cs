@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameInterface.SkywindService.ViewModels;
 
-public record PlayerKickLineViewModel
+public record PlayerKickViewModel
 {
     public Uri ApiUrl { get; init; } = default!;
     public string SecretKey { get; init; } = default!;

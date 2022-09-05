@@ -355,12 +355,12 @@ public class SkywindController : ControllerBase
     ///         "playerCode": "4ucmqplxb029"
     ///     }
     /// </remarks>
-    [HttpPost("players/kickline")]
+    [HttpPost("players/kick")]
     public ValueTask PlayerKickLineAsync(
-        [FromServices] ICommandService<PlayerKickLineCommand> service,
-        PlayerKickLineViewModel source)
+        [FromServices] ICommandService<PlayerKickCommand> service,
+        PlayerKickViewModel source)
     {
-        var command = new PlayerKickLineCommand(
+        var command = new PlayerKickCommand(
             source.ApiUrl,
             source.SecretKey,
             source.Username,

@@ -2,12 +2,12 @@
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices
 {
-    internal class PlayerKickLineCommandService : ICommandService<PlayerKickLineCommand>
+    internal class PlayerKickCommandService : ICommandService<PlayerKickCommand>
     {
         private readonly IAccessToken _accessToken;
         private readonly IGameApiClient _client;
 
-        public PlayerKickLineCommandService(
+        public PlayerKickCommandService(
             IAccessToken accessToken,
             IGameApiClient client)
         {
@@ -15,7 +15,7 @@ namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async ValueTask ExecuteAsync(PlayerKickLineCommand command, CancellationToken cancellationToken = default)
+        public async ValueTask ExecuteAsync(PlayerKickCommand command, CancellationToken cancellationToken = default)
         {
 
             var accessToken = await _accessToken
