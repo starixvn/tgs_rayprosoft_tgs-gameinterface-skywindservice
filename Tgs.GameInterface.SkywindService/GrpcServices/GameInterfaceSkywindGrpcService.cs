@@ -1,4 +1,6 @@
-﻿using Grpc.Core;
+﻿using System.Text.Json;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 using Tgs.GameInterface.SkywindService.Protos;
 using Tgs.ServiceUtility;
@@ -10,8 +12,8 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
     private readonly IGetService<FundInQuery, FundInResult> _fundInService;
     private readonly IGetService<FundOutQuery, FundOutResult> _fundOutService;
     private readonly IGetService<FundStatusQuery, FundStatusResult> _fundStatusService;
+    private readonly IQueryService<GameHistory3rdPartyQuery, GameHistoryResult> _gameHistory3RdPartyService;
     private readonly IQueryService<GameHistoryBySettleQuery, GameHistoryResult> _gameHistoryBySettleService;
-    private readonly IQueryService<GameHistoryByUnSettleQuery, GameHistoryResult> _gameHistoryByUnSettleService;
     private readonly IGetService<GameUrlQuery, GameUrlResult> _gameUrlService;
     private readonly IGetService<PlayerBalanceQuery, PlayerBalanceResult> _playerBalanceService;
     private readonly ICommandService<PlayerCreateCommand> _playerCreateService;
@@ -20,8 +22,8 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         IGetService<FundInQuery, FundInResult> fundInService,
         IGetService<FundOutQuery, FundOutResult> fundOutService,
         IGetService<FundStatusQuery, FundStatusResult> fundStatusService,
+        IQueryService<GameHistory3rdPartyQuery, GameHistoryResult> gameHistory3rdPartyService,
         IQueryService<GameHistoryBySettleQuery, GameHistoryResult> gameHistoryBySettleService,
-        IQueryService<GameHistoryByUnSettleQuery, GameHistoryResult> gameHistoryByUnSettleService,
         IGetService<GameUrlQuery, GameUrlResult> gameUrlService,
         IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
         ICommandService<PlayerCreateCommand> playerCreateService)
@@ -29,8 +31,8 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         _fundInService = fundInService ?? throw new ArgumentNullException(nameof(fundInService));
         _fundOutService = fundOutService ?? throw new ArgumentNullException(nameof(fundOutService));
         _fundStatusService = fundStatusService ?? throw new ArgumentNullException(nameof(fundStatusService));
+        _gameHistory3RdPartyService = gameHistory3rdPartyService ?? throw new ArgumentNullException(nameof(gameHistory3rdPartyService));
         _gameHistoryBySettleService = gameHistoryBySettleService ?? throw new ArgumentNullException(nameof(gameHistoryBySettleService));
-        _gameHistoryByUnSettleService = gameHistoryByUnSettleService ?? throw new ArgumentNullException(nameof(gameHistoryByUnSettleService));
         _gameUrlService = gameUrlService ?? throw new ArgumentNullException(nameof(gameUrlService));
         _playerBalanceService = playerBalanceService ?? throw new ArgumentNullException(nameof(playerBalanceService));
         _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
@@ -116,6 +118,52 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         };
     }
 
+    public override async Task<GameRecordReply> GameRecord3rdParty(GameRecordRequest request, ServerCallContext context)
+    {
+        var query = new GameHistory3rdPartyQuery(
+            new Uri(request.ApiUrl),
+            request.SecretKey,
+            request.Username,
+            request.Password,
+            request.Start.ToDateTimeOffset(),
+            request.End.ToDateTimeOffset(),
+            request.Offset,
+            request.Limit);
+
+        var results = await _gameHistory3RdPartyService
+                    .QueryAsync(
+                        query,
+                        context.CancellationToken)
+                    .ToArrayAsync(context.CancellationToken)
+                    .ConfigureAwait(false);
+
+        var reply = new GameRecordReply();
+
+        if (results.Any())
+        {
+            foreach (var result in results)
+            {
+                reply.Items.Add(new GameRecord()
+                {
+                    PlayerCode = result.PlayerCode,
+                    ExternalRoundId = result.ExternalRoundId,
+                    ExternalGameId = result.ExternalGameId,
+                    Finished = result.Finished,
+                    ExternalCreatedOn = result.ExternalCreatedOn.ToTimestamp(),
+                    ExternalClosedOn = result.ExternalClosedOn.ToTimestamp(),
+                    Bet = result.Bet,
+                    ValidBet = result.Bet,
+                    PlayerWinLoss = result.PlayerWinLoss,
+                    Turnover = result.Bet,
+                    Settle = result.Settle,
+                    AdditionalData = JsonSerializer.Serialize(result.AdditionalData)
+                });
+            }
+        }
+
+        return reply;
+    }
+
     public override async Task<GameRecordReply> GameRecordBySettle(GameRecordRequest request, ServerCallContext context)
     {
         var query = new GameHistoryBySettleQuery(
@@ -143,86 +191,18 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             {
                 reply.Items.Add(new GameRecord()
                 {
-                    Finished = result.Finished,
-                    Revenu = result.Revenu ?? 0,
-                    Currency = result.Currency,
-                    Debit = result.Debit ?? 0,
-                    Credit = result.Credit ?? 0,
-                    RoundId = result.RoundId,
-                    BrandId = result.BrandId,
                     PlayerCode = result.PlayerCode,
-                    GameCode = result.GameCode,
-                    Device = result.Device,
-                    Win = result.Win ?? 0,
-                    Bet = result.Bet,
-                    BalanceBefore = result.BalanceBefore,
-                    BalanceAfter = result.BalanceAfter,
-                    TotalEvents = result.TotalEvents,
-                    FirstTs = result.FirstTs.UtcDateTime.ToString("O"),
-                    Ts = result.Ts.HasValue ? result.Ts.Value.UtcDateTime.ToString("O") : string.Empty,
-                    IsTest = result.IsTest,
-                    InsertedAt = result.InsertedAt.UtcDateTime.ToString("O"),
-                    RecoveryType = result.RecoveryType ?? string.Empty,
-                    TotalJpContribution = result.TotalJpContribution,
-                    TotalJpWin = result.TotalJpWin ?? 0,
-                    AdditionalData = result.AdditionalData
-                });
-            }
-        }
-
-        return reply;
-    }
-
-    public override async Task<GameRecordReply> GameRecordByUnSettle(GameRecordRequest request, ServerCallContext context)
-    {
-        var query = new GameHistoryByUnSettleQuery(
-            new Uri(request.ApiUrl),
-            request.SecretKey,
-            request.Username,
-            request.Password,
-            request.Start.ToDateTimeOffset(),
-            request.End.ToDateTimeOffset(),
-            request.Offset,
-            request.Limit);
-
-        var results = await _gameHistoryByUnSettleService
-                    .QueryAsync(
-                        query,
-                        context.CancellationToken)
-                    .ToArrayAsync(context.CancellationToken)
-                    .ConfigureAwait(false);
-
-        var reply = new GameRecordReply();
-
-        if (results.Any())
-        {
-            foreach (var result in results)
-            {
-                reply.Items.Add(new GameRecord()
-                {
+                    ExternalRoundId = result.ExternalRoundId,
+                    ExternalGameId = result.ExternalGameId,
                     Finished = result.Finished,
-                    Revenu = result.Revenu ?? 0,
-                    Currency = result.Currency,
-                    Debit = result.Debit ?? 0,
-                    Credit = result.Credit ?? 0,
-                    RoundId = result.RoundId,
-                    BrandId = result.BrandId,
-                    PlayerCode = result.PlayerCode,
-                    GameCode = result.GameCode,
-                    Device = result.Device,
-                    Win = result.Win ?? 0,
+                    ExternalCreatedOn = result.ExternalCreatedOn.ToTimestamp(),
+                    ExternalClosedOn = result.ExternalClosedOn.ToTimestamp(),
                     Bet = result.Bet,
-                    BalanceBefore = result.BalanceBefore,
-                    BalanceAfter = result.BalanceAfter,
-                    TotalEvents = result.TotalEvents,
-                    FirstTs = result.FirstTs.UtcDateTime.ToString("O"),
-                    Ts = result.Ts.HasValue ? result.Ts.Value.UtcDateTime.ToString("O") : string.Empty,
-                    IsTest = result.IsTest,
-                    InsertedAt = result.InsertedAt.UtcDateTime.ToString("O"),
-                    RecoveryType = result.RecoveryType,
-                    TotalJpContribution = result.TotalJpContribution,
-                    TotalJpWin = result.TotalJpWin ?? 0,
-                    AdditionalData = result.AdditionalData
+                    ValidBet = result.Bet,
+                    PlayerWinLoss = result.PlayerWinLoss,
+                    Turnover = result.Bet,
+                    Settle = result.Settle,
+                    AdditionalData = JsonSerializer.Serialize(result.AdditionalData)
                 });
             }
         }

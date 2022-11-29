@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Mime;
 using System.Runtime.CompilerServices;
@@ -549,6 +548,69 @@ internal class GameApiClient : IGameApiClient
         }
     }
 
+    public async IAsyncEnumerable<Round3rdPartyResponse> GetGameHistory3rdPartyAsync(
+        Uri apiUrl,
+        string accessToken,
+        DateTimeOffset start,
+        DateTimeOffset end,
+        int offset = 1,
+        int limit = 20,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+
+    {
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        query["offset"] = offset.ToString();
+        query["limit"] = limit.ToString();
+        query["insertedAt__gt"] = start.ToString(@"yyyy-MM-dd\THH:mm:ss.fffK");
+        query["insertedAt__lt"] = end.ToString(@"yyyy-MM-dd\THH:mm:ss.fffK");
+        query["finished"] = "true";
+
+        var url = new Uri(apiUrl, $"v1/history/external??{query}");
+
+        (bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage) = await GetAsync(
+                        url,
+                        accessToken,
+                        "GetGameHistory3rdParty",
+                        cancellationToken)
+        .ConfigureAwait(false);
+
+        if (!IsSuccess)
+        {
+            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+                DateTime.Now.ToString("o"),
+                $"{StatusCode}({(int)StatusCode})",
+                ResponseMessage);
+
+            try
+            {
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
+
+                if (errorCodeResponse == null)
+                {
+                    throw new NetworkException(StatusCode, ResponseMessage);
+                }
+
+                throw new GameProviderResponseErrorException(ResponseMessage);
+            }
+            catch
+            {
+                throw new NetworkException(StatusCode, ResponseMessage);
+            }
+        }
+
+        var rounds = JsonSerializer.Deserialize<IEnumerable<Round3rdPartyResponse>>(ResponseMessage) ?? Enumerable.Empty<Round3rdPartyResponse>();
+
+        if (!rounds.Any())
+        {
+            yield break;
+        }
+
+        foreach (var round in rounds)
+        {
+            yield return round;
+        }
+    }
+
     public async ValueTask<TransactionInfoResponse?> GetTransactionStatusAsync(
         Uri apiUrl,
         string accessToken,
@@ -590,6 +652,44 @@ internal class GameApiClient : IGameApiClient
 
         return JsonSerializer
             .Deserialize<TransactionInfoResponse>(ResponseMessage);
+    }
+
+    public async ValueTask DeleteSessionAsync(
+        Uri apiUrl,
+        string accessToken,
+        string playerCode,
+        CancellationToken cancellationToken = default)
+    {
+        var url = new Uri(apiUrl, $"v1/players/{playerCode}/session");
+
+        (bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage) = await DeleteAsync(
+                        url,
+                        accessToken,
+                        "DeleteSession",
+                        cancellationToken)
+        .ConfigureAwait(false);
+
+        if (!IsSuccess)
+        {
+            try
+            {
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
+
+                if (errorCodeResponse == null)
+                {
+                    throw new NetworkException(StatusCode, ResponseMessage);
+                }
+
+                if (errorCodeResponse.Code != SkywindErrorCode.PLAYER_NOT_FOUND)
+                {
+                    throw new GameProviderResponseErrorException(ResponseMessage);
+                }
+            }
+            catch
+            {
+                throw new NetworkException(StatusCode, ResponseMessage);
+            }
+        }
     }
 
     private async ValueTask<(bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage)> PostAsync(Uri apiUrl, string path, dynamic parameters, string logPrefix, CancellationToken cancellationToken = default)
@@ -743,43 +843,5 @@ internal class GameApiClient : IGameApiClient
         _logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
 
         return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseMessage);
-    }
-
-    public async ValueTask DeleteSessionAsync(
-        Uri apiUrl,
-        string accessToken,
-        string playerCode,
-        CancellationToken cancellationToken = default)
-    {
-        var url = new Uri(apiUrl, $"v1/players/{playerCode}/session");
-
-        (bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage) = await DeleteAsync(
-                        url,
-                        accessToken,
-                        "DeleteSession",
-                        cancellationToken)
-        .ConfigureAwait(false);
-
-        if (!IsSuccess)
-        {
-            try
-            {
-                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
-
-                if (errorCodeResponse == null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
-
-                if (errorCodeResponse.Code != SkywindErrorCode.PLAYER_NOT_FOUND)
-                {
-                    throw new GameProviderResponseErrorException(ResponseMessage);
-                }
-            }
-            catch
-            {
-                throw new NetworkException(StatusCode, ResponseMessage);
-            }
-        }
     }
 }

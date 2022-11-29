@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 
-public record GameHistoryByUnSettleQuery(
+public record GameHistory3rdPartyQuery(
     Uri ApiUrl,
     string SecretKey,
     string Username,

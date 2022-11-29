@@ -10,9 +10,9 @@ public interface IGameInterfaceSkywindClient
 
     ValueTask<FundStatusReply> FundStatusAsync(FundStatusRequest request, CancellationToken cancellationToken = default);
 
-    ValueTask<GameRecordReply> GameRecordBySettleAsync(GameRecordRequest request, CancellationToken cancellationToken = default);
+    ValueTask<GameRecordReply> GameRecord3rdPartyAsync(GameRecordRequest request, CancellationToken cancellationToken = default);
 
-    ValueTask<GameRecordReply> GameRecordByUnSettleAsync(GameRecordRequest request, CancellationToken cancellationToken = default);
+    ValueTask<GameRecordReply> GameRecordBySettleAsync(GameRecordRequest request, CancellationToken cancellationToken = default);
 
     ValueTask<GameUrlReply> GameUrlAsync(GameUrlRequest request, CancellationToken cancellationToken = default);
 
