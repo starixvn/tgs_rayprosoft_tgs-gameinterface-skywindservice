@@ -50,29 +50,18 @@ internal class GameHistoryBySettleQueryService : IQueryService<GameHistoryBySett
         foreach (var round in rounds)
         {
             yield return new GameHistoryResult(
-                round.Finished,
-                round.Revenue,
-                round.Currency,
-                round.Debit,
-                round.Credit,
-                round.RoundId,
-                round.BrandId,
-                round.PlayerCode,
-                round.GameCode,
-                round.Device,
-                round.Win,
-                round.Bet,
-                round.BalanceBefore,
-                round.BalanceAfter,
-                round.TotalEvents,
-                round.FirstTs,
-                round.Ts,
-                round.IsTest,
-                round.InsertedAt,
-                round.RecoveryType,
-                round.TotalJpContribution,
-                round.TotalJpWin,
-                JsonSerializer.Serialize(round));
+                PlayerCode: round.PlayerCode,
+                ExternalRoundId: round.RoundId,
+                ExternalGameId: round.GameCode,
+                Finished: round.Finished,
+                ExternalCreatedOn: round.FirstTs,
+                ExternalClosedOn: round.Ts!.Value,
+                Bet: round.Bet,
+                ValidBet: round.Bet,
+                PlayerWinLoss: round.Win.GetValueOrDefault(0) - round.Bet,
+                Turnover: round.Bet,
+                Settle: round.Win.GetValueOrDefault(0),
+                AdditionalData: JsonSerializer.Serialize(round));
         }
     }
 }

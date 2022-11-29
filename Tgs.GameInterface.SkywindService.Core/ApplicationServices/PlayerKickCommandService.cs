@@ -17,7 +17,6 @@ namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices
 
         public async ValueTask ExecuteAsync(PlayerKickCommand command, CancellationToken cancellationToken = default)
         {
-
             var accessToken = await _accessToken
                     .GetAsync(
                         command.ApiUrl,

@@ -17,7 +17,7 @@ service GameInterfaceSkywindService {
   rpc FundStatus(FundStatusRequest) returns (FundStatusReply);
   rpc GameUrl (GameUrlRequest) returns (GameUrlReply);
   rpc GameRecordBySettle (GameRecordRequest) returns (GameRecordReply);
-  rpc GameRecordByUnSettle (GameRecordRequest) returns (GameRecordReply);
+  rpc GameRecord3rdParty (GameRecordRequest) returns (GameRecordReply);
 }
 
 // The request message containing the user's name.
@@ -112,27 +112,16 @@ message GameRecordReply {
 }
 
 message GameRecord {
-	bool finished = 1;
-    phoenix.protobuf.DecimalValue revenu = 2;
-    string currency = 3;
-	phoenix.protobuf.DecimalValue debit = 4;
-	phoenix.protobuf.DecimalValue credit = 5;
-    string round_id = 6;
-    string brand_id = 7;
-    string player_code = 8;
-    string game_code = 9;
-    string device = 10;
-    phoenix.protobuf.DecimalValue win = 11;
-    phoenix.protobuf.DecimalValue bet = 12;
-    phoenix.protobuf.DecimalValue balance_before = 13;
-    phoenix.protobuf.DecimalValue balance_after = 14;
-    string total_events = 15;
-    string first_ts = 16;
-    string ts = 17;
-    bool is_test = 18;
-    string inserted_at = 19;
-    string recovery_type = 20;
-    phoenix.protobuf.DecimalValue total_jp_contribution = 21;
-    phoenix.protobuf.DecimalValue total_jp_win = 22;
-	string additional_data = 23;
+	string player_code = 1;
+	string external_round_id = 2;
+    string external_game_id = 3;
+	bool finished = 4;
+	google.protobuf.Timestamp external_created_on = 5; 
+	google.protobuf.Timestamp external_closed_on = 6;
+    phoenix.protobuf.DecimalValue bet = 7;
+	phoenix.protobuf.DecimalValue valid_bet = 8;
+	phoenix.protobuf.DecimalValue player_winLoss = 9;
+    phoenix.protobuf.DecimalValue turnover = 10;
+    phoenix.protobuf.DecimalValue settle = 11;
+    string additional_data = 12;
 }

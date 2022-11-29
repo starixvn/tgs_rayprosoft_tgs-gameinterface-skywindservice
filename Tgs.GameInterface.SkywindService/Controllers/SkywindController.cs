@@ -372,7 +372,6 @@ public class SkywindController : ControllerBase
                HttpContext.RequestAborted);
     }
 
-
     /// <summary>
     /// Gets the game URL asynchronous.
     /// </summary>
@@ -483,106 +482,17 @@ public class SkywindController : ControllerBase
         foreach (var result in results)
         {
             yield return new RoundResultViewModel(
-                result.Finished,
-                result.Revenu,
-                result.Currency,
-                result.Debit,
-                result.Credit,
-                result.RoundId,
-                result.BrandId,
                 result.PlayerCode,
-                result.GameCode,
-                result.Device,
-                result.Win,
-                result.Bet,
-                result.BalanceBefore,
-                result.BalanceAfter,
-                result.TotalEvents,
-                result.FirstTs,
-                result.Ts,
-                result.IsTest,
-                result.InsertedAt,
-                result.RecoveryType,
-                result.TotalJpContribution,
-                result.TotalJpWin,
-                result.AdditionalData);
-        }
-    }
-
-    /// <summary>
-    /// Games the history by un settle asynchronous.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="source">The source.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///
-    ///     {
-    ///         "apiUrl": "https://api.gcpstg.m27613.com/",
-    ///         "secretKey": "66a44892-54dc-488b-b755-1d1da4f8ad61",
-    ///         "username": "PGT_brand_api_stg",
-    ///         "password": "ArSg5e6CR2g1wIgB",
-    ///         "start": "2022-08-25T11:00:00+08:00",
-    ///         "end": "2022-08-25T12:00:00+08:00",
-    ///         "offset": 1,
-    ///         "limit": 20
-    ///     }
-    /// </remarks>
-    [HttpPost("game/history/unsettle")]
-    public async IAsyncEnumerable<RoundResultViewModel> GameHistoryByUnSettleAsync(
-        [FromServices] IQueryService<GameHistoryByUnSettleQuery, GameHistoryResult> service,
-        RoundViewModel source)
-    {
-        var query = new GameHistoryByUnSettleQuery(
-            source.ApiUrl,
-            source.SecretKey,
-            source.Username,
-            source.Password,
-            source.Start,
-            source.End,
-            source.Offset,
-            source.Limit);
-
-        var results = await service
-                .QueryAsync(
-                    query,
-                    HttpContext.RequestAborted)
-                .ToArrayAsync(HttpContext.RequestAborted)
-                .ConfigureAwait(false);
-
-        if (!results.Any())
-        {
-            yield break;
-        }
-
-        foreach (var result in results)
-        {
-            yield return new RoundResultViewModel(
+                result.ExternalRoundId,
+                result.ExternalGameId,
                 result.Finished,
-                result.Revenu,
-                result.Currency,
-                result.Debit,
-                result.Credit,
-                result.RoundId,
-                result.BrandId,
-                result.PlayerCode,
-                result.GameCode,
-                result.Device,
-                result.Win,
+                result.ExternalCreatedOn,
+                result.ExternalClosedOn,
                 result.Bet,
-                result.BalanceBefore,
-                result.BalanceAfter,
-                result.TotalEvents,
-                result.FirstTs,
-                result.Ts,
-                result.IsTest,
-                result.InsertedAt,
-                result.RecoveryType,
-                result.TotalJpContribution,
-                result.TotalJpWin,
+                result.ValidBet,
+                result.PlayerWinLoss,
+                result.Turnover,
+                result.Settle,
                 result.AdditionalData);
         }
     }

@@ -39,7 +39,7 @@ internal class FundStatusGetService : IGetService<FundStatusQuery, FundStatusRes
                 IsTransaction: false,
                 Status: string.Empty)
             : new FundStatusResult(
-            IsTransaction: (response.Status.Equals("absent", StringComparison.OrdinalIgnoreCase) ? false : true),
+            IsTransaction: (!response.Status.Equals("absent", StringComparison.OrdinalIgnoreCase)),
             Status: response.Status);
     }
 }

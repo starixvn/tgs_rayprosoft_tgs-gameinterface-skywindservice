@@ -102,4 +102,13 @@ public interface IGameApiClient
         int limit = 20,
         string format = "string",
         CancellationToken cancellationToken = default);
+
+    IAsyncEnumerable<Round3rdPartyResponse> GetGameHistory3rdPartyAsync(
+      Uri apiUrl,
+      string accessToken,
+      DateTimeOffset start,
+      DateTimeOffset end,
+      int offset = 1,
+      int limit = 20,
+      CancellationToken cancellationToken = default);
 }
