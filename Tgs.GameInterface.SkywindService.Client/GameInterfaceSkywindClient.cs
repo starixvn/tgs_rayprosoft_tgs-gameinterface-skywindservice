@@ -32,16 +32,16 @@ internal class GameInterfaceSkywindClient : IGameInterfaceSkywindClient
             cancellationToken: cancellationToken)
         .ConfigureAwait(false);
 
-    public async ValueTask<GameRecordReply> GameRecordBySettleAsync(GameRecordRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<GameRecordReply> GameRecord3rdPartyAsync(GameRecordRequest request, CancellationToken cancellationToken = default)
         => await _client
-        .GameRecordBySettleAsync(
+        .GameRecord3rdPartyAsync(
             request: request,
             cancellationToken: cancellationToken)
         .ConfigureAwait(false);
 
-    public async ValueTask<GameRecordReply> GameRecordByUnSettleAsync(GameRecordRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<GameRecordReply> GameRecordBySettleAsync(GameRecordRequest request, CancellationToken cancellationToken = default)
         => await _client
-        .GameRecordByUnSettleAsync(
+        .GameRecordBySettleAsync(
             request: request,
             cancellationToken: cancellationToken)
         .ConfigureAwait(false);

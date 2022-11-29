@@ -4,12 +4,12 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 
-internal class GameHistoryByUnSettleQueryService : IQueryService<GameHistoryByUnSettleQuery, GameHistoryResult>
+internal class GameHistory3rdPartyQueryService : IQueryService<GameHistory3rdPartyQuery, GameHistoryResult>
 {
     private readonly IAccessToken _accessToken;
     private readonly IGameApiClient _client;
 
-    public GameHistoryByUnSettleQueryService(
+    public GameHistory3rdPartyQueryService(
         IAccessToken accessToken,
         IGameApiClient client)
     {
@@ -18,7 +18,7 @@ internal class GameHistoryByUnSettleQueryService : IQueryService<GameHistoryByUn
     }
 
     public async IAsyncEnumerable<GameHistoryResult> QueryAsync(
-        GameHistoryByUnSettleQuery query,
+        GameHistory3rdPartyQuery query,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var accessToken = await _accessToken
@@ -31,7 +31,7 @@ internal class GameHistoryByUnSettleQueryService : IQueryService<GameHistoryByUn
                 .ConfigureAwait(false);
 
         var rounds = await _client
-                       .GetGameHistoryByUnSettleAsync(
+                       .GetGameHistory3rdPartyAsync(
                            query.ApiUrl,
                            accessToken,
                            query.Start,
@@ -50,29 +50,18 @@ internal class GameHistoryByUnSettleQueryService : IQueryService<GameHistoryByUn
         foreach (var round in rounds)
         {
             yield return new GameHistoryResult(
-                round.Finished,
-                round.Revenue,
-                round.Currency,
-                round.Debit,
-                round.Credit,
-                round.RoundId,
-                round.BrandId,
-                round.PlayerCode,
-                round.GameCode,
-                round.Device,
-                round.Win,
-                round.Bet,
-                round.BalanceBefore,
-                round.BalanceAfter,
-                round.TotalEvents,
-                round.FirstTs,
-                round.Ts,
-                round.IsTest,
-                round.InsertedAt,
-                round.RecoveryType,
-                round.TotalJpContribution,
-                round.TotalJpWin,
-                JsonSerializer.Serialize(round));
+                PlayerCode: round.PlayerCode,
+                ExternalRoundId: round.RoundId,
+                ExternalGameId: round.GameCode,
+                Finished: round.Finished,
+                ExternalCreatedOn: round.InsertedAt,
+                ExternalClosedOn: round.InsertedAt,
+                Bet: round.Bet,
+                ValidBet: round.Bet,
+                PlayerWinLoss: round.Win - round.Bet,
+                Turnover: round.Bet,
+                Settle: round.Win,
+                AdditionalData: JsonSerializer.Serialize(round));
         }
     }
 }
