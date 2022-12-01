@@ -488,7 +488,7 @@ internal class GameApiClient : IGameApiClient
         string accessToken,
         DateTimeOffset start,
         DateTimeOffset end,
-        int offset = 1,
+        int offset = 0,
         int limit = 20,
         string format = "string",
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -553,7 +553,7 @@ internal class GameApiClient : IGameApiClient
         string accessToken,
         DateTimeOffset start,
         DateTimeOffset end,
-        int offset = 1,
+        int offset = 0,
         int limit = 20,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
 
@@ -565,7 +565,7 @@ internal class GameApiClient : IGameApiClient
         query["insertedAt__lt"] = end.ToString(@"yyyy-MM-dd\THH:mm:ss.fffK");
         query["finished"] = "true";
 
-        var url = new Uri(apiUrl, $"v1/history/external??{query}");
+        var url = new Uri(apiUrl, $"v1/history/external?{query}");
 
         (bool IsSuccess, HttpStatusCode StatusCode, string ResponseMessage) = await GetAsync(
                         url,

@@ -98,7 +98,7 @@ public interface IGameApiClient
         string accessToken,
         DateTimeOffset start,
         DateTimeOffset end,
-        int offset = 1,
+        int offset = 0,
         int limit = 20,
         string format = "string",
         CancellationToken cancellationToken = default);
@@ -108,7 +108,7 @@ public interface IGameApiClient
       string accessToken,
       DateTimeOffset start,
       DateTimeOffset end,
-      int offset = 1,
+      int offset = 0,
       int limit = 20,
       CancellationToken cancellationToken = default);
 }
