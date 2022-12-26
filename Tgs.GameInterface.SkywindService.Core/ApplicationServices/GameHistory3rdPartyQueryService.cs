@@ -51,7 +51,7 @@ internal class GameHistory3rdPartyQueryService : IQueryService<GameHistory3rdPar
         {
             yield return new GameHistoryResult(
                 PlayerCode: round.PlayerCode,
-                ExternalRoundId: round.RoundId,
+                ExternalRoundId: $"{round.RoundId}_{round.EventId}",
                 ExternalGameId: round.GameCode,
                 Finished: round.Finished,
                 ExternalCreatedOn: round.InsertedAt,
