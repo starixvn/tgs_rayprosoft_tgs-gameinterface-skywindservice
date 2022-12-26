@@ -423,7 +423,7 @@ internal class GameApiClient : IGameApiClient
         string accessToken,
         DateTimeOffset start,
         DateTimeOffset end,
-        int offset = 1,
+        int offset = 0,
         int limit = 20,
         string format = "string",
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
