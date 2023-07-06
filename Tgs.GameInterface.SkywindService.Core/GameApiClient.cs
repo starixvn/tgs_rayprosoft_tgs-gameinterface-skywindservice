@@ -64,13 +64,8 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
-
-                if (errorCodeResponse == null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
-
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage)
+                    ?? throw new NetworkException(StatusCode, ResponseMessage);
                 if (errorCodeResponse.Code != SkywindErrorCode.PLAYERS_CODE_ALREADY_EXISTS)
                 {
                     throw new GameProviderResponseErrorException(ResponseMessage);
@@ -216,12 +211,9 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage)
+                    ?? throw new NetworkException(StatusCode, ResponseMessage);
 
-                if (errorCodeResponse is null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
                 if (errorCodeResponse.Code != SkywindErrorCode.PLAYERS_CODE_ALREADY_EXISTS)
                 {
                     throw new GameProviderResponseErrorException(ResponseMessage);
@@ -455,12 +447,8 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
-
-                if (errorCodeResponse == null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage)
+                    ?? throw new NetworkException(StatusCode, ResponseMessage);
 
                 throw new GameProviderResponseErrorException(ResponseMessage);
             }
@@ -520,12 +508,8 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
-
-                if (errorCodeResponse == null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage)
+                    ?? throw new NetworkException(StatusCode, ResponseMessage);
 
                 throw new GameProviderResponseErrorException(ResponseMessage);
             }
@@ -583,12 +567,8 @@ internal class GameApiClient : IGameApiClient
 
             try
             {
-                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
-
-                if (errorCodeResponse == null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage)
+                    ?? throw new NetworkException(StatusCode, ResponseMessage);
 
                 throw new GameProviderResponseErrorException(ResponseMessage);
             }
@@ -673,12 +653,8 @@ internal class GameApiClient : IGameApiClient
         {
             try
             {
-                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage);
-
-                if (errorCodeResponse == null)
-                {
-                    throw new NetworkException(StatusCode, ResponseMessage);
-                }
+                var errorCodeResponse = JsonSerializer.Deserialize<ErrorCodeResponse>(ResponseMessage)
+                    ?? throw new NetworkException(StatusCode, ResponseMessage);
 
                 if (errorCodeResponse.Code != SkywindErrorCode.PLAYER_NOT_FOUND)
                 {
@@ -707,9 +683,12 @@ internal class GameApiClient : IGameApiClient
 
         var responseMessage = default(string);
 
-        using (var readStream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
+        using (var stream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
         {
-            responseMessage = await readStream.ReadToEndAsync().ConfigureAwait(false) ?? string.Empty;
+            responseMessage = await stream
+                .ReadToEndAsync(
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false) ?? string.Empty;
         }
 
         var logEvent = new GameApiLogEvent
@@ -747,9 +726,12 @@ internal class GameApiClient : IGameApiClient
 
         var responseMessage = default(string);
 
-        using (var readStream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
+        using (var stream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
         {
-            responseMessage = await readStream.ReadToEndAsync().ConfigureAwait(false) ?? string.Empty;
+            responseMessage = await stream
+                .ReadToEndAsync(
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false) ?? string.Empty;
         }
 
         var logEvent = new GameApiLogEvent
@@ -784,9 +766,12 @@ internal class GameApiClient : IGameApiClient
 
         var responseMessage = default(string);
 
-        using (var readStream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
+        using (var stream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
         {
-            responseMessage = await readStream.ReadToEndAsync().ConfigureAwait(false) ?? string.Empty;
+            responseMessage = await stream
+                .ReadToEndAsync(
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false) ?? string.Empty;
         }
 
         var logEvent = new GameApiLogEvent
@@ -821,9 +806,12 @@ internal class GameApiClient : IGameApiClient
 
         var responseMessage = default(string);
 
-        using (var readStream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
+        using (var stream = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).Result, Encoding.UTF8))
         {
-            responseMessage = await readStream.ReadToEndAsync().ConfigureAwait(false) ?? string.Empty;
+            responseMessage = await stream
+                .ReadToEndAsync(
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false) ?? string.Empty;
         }
 
         var logEvent = new GameApiLogEvent

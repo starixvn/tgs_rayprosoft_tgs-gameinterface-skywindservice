@@ -7,18 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService.Core", "Tgs.GameInterface.SkywindService.Core\Tgs.GameInterface.SkywindService.Core.csproj", "{52F9B736-8E27-4F3C-8A6E-6E8067587EBF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "方案項目", "方案項目", "{57565475-2900-4C06-A797-A15F9B44401D}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		CodeMaid.config = CodeMaid.config
-		nuget.config = nuget.config
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService.Core.UnitTest", "Tgs.GameInterface.SkywindService.Core.UnitTest\Tgs.GameInterface.SkywindService.Core.UnitTest.csproj", "{7CF12732-125E-4923-8EB4-5CAE7DE44EE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameInterface.SkywindService.Common", "Tgs.GameInterface.SkywindService.Common\Tgs.GameInterface.SkywindService.Common.csproj", "{2AE69284-C445-4638-A2E4-816E42FC8B0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService.Common", "Tgs.GameInterface.SkywindService.Common\Tgs.GameInterface.SkywindService.Common.csproj", "{2AE69284-C445-4638-A2E4-816E42FC8B0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameInterface.SkywindService.Client", "Tgs.GameInterface.SkywindService.Client\Tgs.GameInterface.SkywindService.Client.csproj", "{F273F91E-EDCF-443C-9C0F-24E62AC14E08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService.Client", "Tgs.GameInterface.SkywindService.Client\Tgs.GameInterface.SkywindService.Client.csproj", "{F273F91E-EDCF-443C-9C0F-24E62AC14E08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
