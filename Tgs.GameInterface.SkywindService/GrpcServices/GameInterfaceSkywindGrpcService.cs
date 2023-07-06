@@ -9,6 +9,7 @@ namespace Tgs.GameInterface.SkywindService.GrpcServices;
 
 public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameInterfaceSkywindServiceBase
 {
+    private readonly ILogger<GameInterfaceSkywindGrpcService> _logger;
     private readonly IGetService<FundInQuery, FundInResult> _fundInService;
     private readonly IGetService<FundOutQuery, FundOutResult> _fundOutService;
     private readonly IGetService<FundStatusQuery, FundStatusResult> _fundStatusService;
@@ -19,6 +20,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
     private readonly ICommandService<PlayerCreateCommand> _playerCreateService;
 
     public GameInterfaceSkywindGrpcService(
+        ILogger<GameInterfaceSkywindGrpcService> logger,
         IGetService<FundInQuery, FundInResult> fundInService,
         IGetService<FundOutQuery, FundOutResult> fundOutService,
         IGetService<FundStatusQuery, FundStatusResult> fundStatusService,
@@ -28,6 +30,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
         ICommandService<PlayerCreateCommand> playerCreateService)
     {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _fundInService = fundInService ?? throw new ArgumentNullException(nameof(fundInService));
         _fundOutService = fundOutService ?? throw new ArgumentNullException(nameof(fundOutService));
         _fundStatusService = fundStatusService ?? throw new ArgumentNullException(nameof(fundStatusService));
@@ -36,6 +39,16 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
         _gameUrlService = gameUrlService ?? throw new ArgumentNullException(nameof(gameUrlService));
         _playerBalanceService = playerBalanceService ?? throw new ArgumentNullException(nameof(playerBalanceService));
         _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
+    }
+
+    public override Task<CheckingServiceReply> CheckingService(CheckingServiceRequest request, ServerCallContext context)
+    {
+        _logger.LogWarning("LogOn:{logOn} Message: Create a check connection.({machineName})", DateTime.Now.ToString("o"), request.MachineName);
+
+        return Task.FromResult(new CheckingServiceReply
+        {
+            MachineName = Environment.MachineName
+        });
     }
 
     public override async Task<FundReply> FundIn(FundRequest request, ServerCallContext context)

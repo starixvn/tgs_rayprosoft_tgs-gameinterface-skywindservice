@@ -4,6 +4,8 @@ namespace Tgs.GameInterface.SkywindService.Client;
 
 public interface IGameInterfaceSkywindClient
 {
+    ValueTask<string> CheckingServiceAsync(string machineName, CancellationToken cancellationToken = default);
+
     ValueTask<FundReply> FundInAsync(FundRequest request, CancellationToken cancellationToken = default);
 
     ValueTask<FundReply> FundOutAsync(FundRequest request, CancellationToken cancellationToken = default);
