@@ -169,7 +169,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
                     PlayerWinLoss = result.PlayerWinLoss,
                     Turnover = result.Bet,
                     Settle = result.Settle,
-                    AdditionalData = JsonSerializer.Serialize(result.AdditionalData)
+                    AdditionalData = result.AdditionalData
                 });
             }
         }
@@ -215,7 +215,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
                     PlayerWinLoss = result.PlayerWinLoss,
                     Turnover = result.Bet,
                     Settle = result.Settle,
-                    AdditionalData = JsonSerializer.Serialize(result.AdditionalData)
+                    AdditionalData = result.AdditionalData
                 });
             }
         }
