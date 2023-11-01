@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Google.Protobuf.WellKnownTypes;
+﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 using Tgs.GameInterface.SkywindService.Protos;
