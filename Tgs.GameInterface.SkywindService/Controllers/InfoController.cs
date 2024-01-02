@@ -3,13 +3,17 @@ using System.Net;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Tgs.GameInterface.SkywindService.Core;
 
 namespace Tgs.GameInterface.SkywindService.Controllers;
 
 [Route("[controller]")]
 [ApiController]
 public class InfoController(
-    IConfiguration configuration) : ControllerBase
+    IConfiguration configuration,
+    IOptions<GameInterfaceSettingOptions> gameInterfaceSettingOptions,
+    IOptions<DistributedLockSettingsOptions> distributedLockSettingsOptions) : ControllerBase
 {
     /// <summary>
     /// Gets the asynchronous.
@@ -35,7 +39,10 @@ public class InfoController(
                 Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
                 ProcessCount = Environment.ProcessorCount,
                 ReleaseNamespace = configuration.GetValue<string>("RELEASE_NAMESPACE"),
-                PodIPAddress = configuration.GetValue<string>("POD_IP")
+                PodIPAddress = configuration.GetValue<string>("POD_IP"),
+                GameInterfaceSettingOptions = gameInterfaceSettingOptions.Value,
+                DistributedLockSettingsOptions = distributedLockSettingsOptions.Value
+
             }
         };
     }
