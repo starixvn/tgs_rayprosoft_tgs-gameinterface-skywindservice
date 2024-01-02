@@ -4,45 +4,35 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 
-internal class GameHistoryBySettleQueryService : IQueryService<GameHistoryBySettleQuery, GameHistoryResult>
+internal class GameHistoryBySettleQueryService(
+    IAccessToken accessToken,
+    IGameApiClient client) : IQueryService<GameHistoryBySettleQuery, GameHistoryResult>
 {
-    private readonly IAccessToken _accessToken;
-    private readonly IGameApiClient _client;
-
-    public GameHistoryBySettleQueryService(
-        IAccessToken accessToken,
-        IGameApiClient client)
-    {
-        _accessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async IAsyncEnumerable<GameHistoryResult> QueryAsync(
         GameHistoryBySettleQuery query,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var accessToken = await _accessToken
-                .GetAsync(
-                    query.ApiUrl,
-                    query.SecretKey,
-                    query.Username,
-                    query.Password,
-                    cancellationToken)
-                .ConfigureAwait(false);
+        var token = await accessToken.GetAsync(
+            apiUrl: query.ApiUrl,
+            secretKey: query.SecretKey,
+            username: query.Username,
+            password: query.Password,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var rounds = await _client
-                       .GetGameHistoryBySettleAsync(
-                           query.ApiUrl,
-                           accessToken,
-                           query.Start,
-                           query.End,
-                           offset: query.Offset,
-                           limit: query.Limit,
-                           cancellationToken: cancellationToken)
-                       .ToArrayAsync(cancellationToken)
-                       .ConfigureAwait(false);
+        var rounds = await client
+            .GetGameHistoryBySettleAsync(
+            apiUrl: query.ApiUrl,
+            accessToken: token,
+            start: query.Start,
+            end: query.End,
+            offset: query.Offset,
+            limit: query.Limit,
+            cancellationToken: cancellationToken)
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
 
-        if (!rounds.Any())
+        if (rounds.Length == 0)
         {
             yield break;
         }

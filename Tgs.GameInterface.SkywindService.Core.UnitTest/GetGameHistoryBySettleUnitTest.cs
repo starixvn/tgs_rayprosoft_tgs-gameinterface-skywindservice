@@ -18,7 +18,7 @@ public class GetGameHistoryBySettleUnitTest
         var end = DateTimeOffset.Now;
 
         var response = new RoundResponse[] {
-            new RoundResponse(){
+            new(){
                 Finished= true,
                 Revenue= 0.23m,
                 Currency="CNY",

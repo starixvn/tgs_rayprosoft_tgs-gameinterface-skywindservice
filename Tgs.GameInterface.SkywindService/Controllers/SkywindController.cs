@@ -474,7 +474,7 @@ public class SkywindController : ControllerBase
                 .ToArrayAsync(HttpContext.RequestAborted)
                 .ConfigureAwait(false);
 
-        if (!results.Any())
+        if (results.Length == 0)
         {
             yield break;
         }

@@ -4,25 +4,13 @@ using Tgs.GameInterface.SkywindService.Core.Exceptions;
 
 namespace Tgs.GameInterface.SkywindService.Core;
 
-public class AccessToken : IAccessToken
+public class AccessToken(
+    IDatabase database,
+    IGameApiClient client,
+    IGamePublishMessage gamePublishMessage,
+    TimeSpan expiry) : IAccessToken
 {
-    private readonly IDatabase _database;
-    private readonly IGameApiClient _client;
-    private readonly IGamePublishMessage _gamePublishMessage;
-    private readonly TimeSpan _expiry;
     private readonly string _rediskey = "gp:gameinterface:skywind:accesstoken:{0}";
-
-    public AccessToken(
-        IDatabase database,
-        IGameApiClient client,
-        IGamePublishMessage gamePublishMessage,
-        TimeSpan expiry)
-    {
-        _database = database ?? throw new ArgumentNullException(nameof(database));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _gamePublishMessage = gamePublishMessage ?? throw new ArgumentNullException(nameof(gamePublishMessage));
-        _expiry = expiry;
-    }
 
     public async ValueTask CreateAsync(
         Uri apiUrl,
@@ -31,7 +19,7 @@ public class AccessToken : IAccessToken
         string password,
         CancellationToken cancellationToken = default)
     {
-        var accessToken = await _client
+        var accessToken = await client
                 .GetAccessTokenAsync(
                     apiUrl,
                     secretKey,
@@ -47,11 +35,11 @@ public class AccessToken : IAccessToken
 
         var key = string.Format(_rediskey, username);
 
-        _ = await _database
+        _ = await database
                 .StringSetAsync(
                     key,
                     accessToken,
-                    _expiry)
+                    expiry)
                 .ConfigureAwait(false);
     }
 
@@ -64,11 +52,11 @@ public class AccessToken : IAccessToken
     {
         var key = string.Format(_rediskey, username);
 
-        var accessToken = !await _database
+        var accessToken = !await database
             .KeyExistsAsync(
                 key)
             .ConfigureAwait(false)
-            ? await _client
+            ? await client
                 .GetAccessTokenAsync(
                     apiUrl,
                     secretKey,
@@ -76,7 +64,7 @@ public class AccessToken : IAccessToken
                     password,
                     cancellationToken)
                 .ConfigureAwait(false)
-            : (string?)await _database.StringGetAsync(key).ConfigureAwait(false);
+            : (string?)await database.StringGetAsync(key).ConfigureAwait(false);
         if (string.IsNullOrWhiteSpace(accessToken))
         {
             throw new AccessTokenExeption();
@@ -90,7 +78,7 @@ public class AccessToken : IAccessToken
             Password = password
         };
 
-        await _gamePublishMessage
+        await gamePublishMessage
             .AccessTokenPublishMessageAsync(
                 request,
                 cancellationToken)
@@ -102,12 +90,12 @@ public class AccessToken : IAccessToken
     public async ValueTask<TimeSpan?> GetTTLAsync(
         string username,
         CancellationToken cancellationToken = default)
-        => !await _database
+        => !await database
             .KeyExistsAsync(
                 string.Format(_rediskey, username))
             .ConfigureAwait(false)
             ? null
-            : await _database
+            : await database
             .KeyTimeToLiveAsync(
                 string.Format(_rediskey, username))
             .ConfigureAwait(false);

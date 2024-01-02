@@ -2,37 +2,26 @@
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices
 {
-    internal class PlayerKickCommandService : ICommandService<PlayerKickCommand>
+    internal class PlayerKickCommandService(
+        IAccessToken accessToken,
+        IGameApiClient client) : ICommandService<PlayerKickCommand>
     {
-        private readonly IAccessToken _accessToken;
-        private readonly IGameApiClient _client;
-
-        public PlayerKickCommandService(
-            IAccessToken accessToken,
-            IGameApiClient client)
-        {
-            _accessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-        }
-
         public async ValueTask ExecuteAsync(PlayerKickCommand command, CancellationToken cancellationToken = default)
         {
-            var accessToken = await _accessToken
-                    .GetAsync(
-                        command.ApiUrl,
-                        command.SecretKey,
-                        command.Username,
-                        command.Password,
-                        cancellationToken)
-                    .ConfigureAwait(false);
+            var token = await accessToken.GetAsync(
+                apiUrl: command.ApiUrl,
+                secretKey: command.SecretKey,
+                username: command.Username,
+                password: command.Password,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
-            await _client
-                    .DeleteSessionAsync(
-                        command.ApiUrl,
-                        accessToken,
-                        command.PlayerCode,
-                        cancellationToken: cancellationToken)
-                    .ConfigureAwait(false);
+            await client.DeleteSessionAsync(
+                apiUrl: command.ApiUrl,
+                accessToken: token,
+                playerCode: command.PlayerCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
         }
     }
 }

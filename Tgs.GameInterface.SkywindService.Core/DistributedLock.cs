@@ -4,23 +4,16 @@ using StackExchange.Redis;
 
 namespace Tgs.GameInterface.SkywindService.Core;
 
-internal class DistributedLock : IDistributedLock
+internal class DistributedLock(
+    IOptions<DistributedLockSettingsOptions> options,
+    IDatabase database) : IDistributedLock
 {
-    private readonly IDatabase _database;
-    private readonly DistributedLockSettingsOptions _settings;
-
-    public DistributedLock(
-        IOptions<DistributedLockSettingsOptions> options,
-        IDatabase database)
-    {
-        _settings = options.Value;
-        _database = database ?? throw new ArgumentNullException(nameof(database));
-    }
+    private readonly DistributedLockSettingsOptions _settings = options.Value;
 
     public async ValueTask<bool> LockingAsync(string acction)
     {
         var key = $"{_settings.LockPrefixKey}:{acction}";
-        if (await _database.KeyExistsAsync(key).ConfigureAwait(false))
+        if (await database.KeyExistsAsync(key).ConfigureAwait(false))
         {
             return false;
         }
@@ -30,22 +23,20 @@ internal class DistributedLock : IDistributedLock
             Acction = acction,
             LockTime = DateTime.UtcNow.ToString("O")
         });
-        return await _database
-            .StringSetAsync(
-                key: key,
-                value: value,
-                expiry: TimeSpan.FromMinutes(_settings.LockMinutes),
-                when: When.NotExists,
-                flags: CommandFlags.None)
+        return await database.StringSetAsync(
+            key: key,
+            value: value,
+            expiry: TimeSpan.FromMinutes(_settings.LockMinutes),
+            when: When.NotExists,
+            flags: CommandFlags.None)
             .ConfigureAwait(false);
     }
 
     public void Release(string acction)
     {
         var key = $"{_settings.LockPrefixKey}:{acction}";
-        _ = _database
-            .KeyDelete(
-                key: key,
-                flags: CommandFlags.FireAndForget);
+        _ = database.KeyDelete(
+            key: key,
+            flags: CommandFlags.FireAndForget);
     }
 }

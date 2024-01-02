@@ -1,8 +1,5 @@
 ﻿namespace Tgs.GameInterface.SkywindService.Core.Exceptions;
 
-public class DuplicateTransactionException : Exception
+public class DuplicateTransactionException(string extTrxId) : Exception($"This transaction is repeated.({extTrxId})")
 {
-    public DuplicateTransactionException(string extTrxId) : base($"This transaction is repeated.({extTrxId})")
-    {
-    }
 }

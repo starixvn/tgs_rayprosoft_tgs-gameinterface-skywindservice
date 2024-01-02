@@ -18,7 +18,7 @@ public class GetGameHistory3rdpartyUnitTest
         var end = DateTimeOffset.Now;
 
         var response = new Round3rdPartyResponse[] {
-            new Round3rdPartyResponse(){
+            new(){
                 ExtTrxId="dobjuQ5UxtsAAAMIdobjpCQ9iFg",
                 Bet= 5000,
                 Win=0,

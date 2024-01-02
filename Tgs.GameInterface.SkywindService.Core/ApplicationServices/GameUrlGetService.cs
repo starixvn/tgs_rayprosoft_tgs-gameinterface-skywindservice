@@ -2,38 +2,27 @@
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 
-internal class GameUrlGetService : IGetService<GameUrlQuery, GameUrlResult>
+internal class GameUrlGetService(
+    IAccessToken accessToken,
+    IGameApiClient client) : IGetService<GameUrlQuery, GameUrlResult>
 {
-    private readonly IAccessToken _accessToken;
-    private readonly IGameApiClient _client;
-
-    public GameUrlGetService(
-        IAccessToken accessToken,
-        IGameApiClient client)
-    {
-        _accessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async ValueTask<GameUrlResult> GetAsync(GameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var accessToken = await _accessToken
-                .GetAsync(
-                    query.ApiUrl,
-                    query.SecretKey,
-                    query.Username,
-                    query.Password,
-                    cancellationToken)
-                .ConfigureAwait(false);
+        var token = await accessToken.GetAsync(
+            apiUrl: query.ApiUrl,
+            secretKey: query.SecretKey,
+            username: query.Username,
+            password: query.Password,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var response = await _client
-            .GetGameUrlAsync(
-                query.ApiUrl,
-                accessToken,
-                query.PlayerCode,
-                query.GameCode,
-                query.Language,
-                cancellationToken: cancellationToken)
+        var response = await client.GetGameUrlAsync(
+            apiUrl: query.ApiUrl,
+            accessToken: token,
+            playerCode: query.PlayerCode,
+            gameCode: query.GameCode,
+            language: query.Language,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return new GameUrlResult(

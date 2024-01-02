@@ -2,40 +2,29 @@
 
 namespace Tgs.GameInterface.SkywindService.Core.ApplicationServices;
 
-internal class FundInGetService : IGetService<FundInQuery, FundInResult>
+internal class FundInGetService(
+    IAccessToken accessToken,
+    IGameApiClient client) : IGetService<FundInQuery, FundInResult>
 {
-    private readonly IAccessToken _accessToken;
-    private readonly IGameApiClient _client;
-
-    public FundInGetService(
-        IAccessToken accessToken,
-        IGameApiClient client)
-    {
-        _accessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async ValueTask<FundInResult> GetAsync(FundInQuery query, CancellationToken cancellationToken = default)
     {
-        var accessToken = await _accessToken
-                .GetAsync(
-                    query.ApiUrl,
-                    query.SecretKey,
-                    query.Username,
-                    query.Password,
-                    cancellationToken)
-                .ConfigureAwait(false);
+        var token = await accessToken.GetAsync(
+            apiUrl: query.ApiUrl,
+            secretKey: query.SecretKey,
+            username: query.Username,
+            password: query.Password,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var response = await _client
-                        .WithdrawalAsync(
-                            query.ApiUrl,
-                            accessToken,
-                            query.ExtTrxId,
-                            query.PlayerCode,
-                            query.Currency,
-                            query.Amount,
-                            cancellationToken: cancellationToken)
-                        .ConfigureAwait(false);
+        var response = await client.WithdrawalAsync(
+            apiUrl: query.ApiUrl,
+            accessToken: token,
+            extTrxId: query.ExtTrxId,
+            playerCode: query.PlayerCode,
+            currency: query.Currency,
+            amount: query.Amount,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         return new FundInResult(
                 Status: response is not null,

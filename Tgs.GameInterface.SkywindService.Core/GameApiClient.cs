@@ -11,19 +11,10 @@ using Tgs.GameInterface.SkywindService.Core.Models;
 
 namespace Tgs.GameInterface.SkywindService.Core;
 
-internal class GameApiClient : IGameApiClient
+internal class GameApiClient(
+    ILogger<GameApiClient> logger,
+    HttpClient client) : IGameApiClient
 {
-    private readonly ILogger<GameApiClient> _logger;
-    private readonly HttpClient _client;
-
-    public GameApiClient(
-        ILogger<GameApiClient> logger,
-        HttpClient client)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async ValueTask CreatePlayerAsync(
         Uri apiUrl,
         string accessToken,
@@ -56,7 +47,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 parameters,
                 $"{StatusCode}({(int)StatusCode})",
@@ -108,7 +99,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 parameters,
                 $"{StatusCode}({(int)StatusCode})",
@@ -154,7 +145,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -203,7 +194,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 parameters,
                 $"{StatusCode}({(int)StatusCode})",
@@ -250,7 +241,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -305,7 +296,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  Parameters:{parameters} StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 parameters,
                 $"{StatusCode}({(int)StatusCode})",
@@ -349,7 +340,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -375,7 +366,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -401,7 +392,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -440,7 +431,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -501,7 +492,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -560,7 +551,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -609,7 +600,7 @@ internal class GameApiClient : IGameApiClient
 
         if (!IsSuccess)
         {
-            _logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
+            logger.LogError("LogOn:{logOn}  StatusCode:{statusCode} Response:{responseMessage}",
                 DateTime.Now.ToString("o"),
                 $"{StatusCode}({(int)StatusCode})",
                 ResponseMessage);
@@ -677,7 +668,7 @@ internal class GameApiClient : IGameApiClient
 
         HttpContent content = new StringContent(JsonSerializer.Serialize(parameters), Encoding.UTF8, MediaTypeNames.Application.Json);
 
-        var httpResponseMessage = await _client.PostAsync(url, content, cancellationToken);
+        var httpResponseMessage = await client.PostAsync(url, content, cancellationToken);
 
         sw.Stop();
 
@@ -705,7 +696,7 @@ internal class GameApiClient : IGameApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
+        logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
 
         return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseMessage);
     }
@@ -719,8 +710,8 @@ internal class GameApiClient : IGameApiClient
 
         HttpContent content = new StringContent(JsonSerializer.Serialize(parameters), Encoding.UTF8, MediaTypeNames.Application.Json);
 
-        _client.DefaultRequestHeaders.Add("X-ACCESS-TOKEN", accessToken);
-        var httpResponseMessage = await _client.PostAsync(url, content, cancellationToken);
+        client.DefaultRequestHeaders.Add("X-ACCESS-TOKEN", accessToken);
+        var httpResponseMessage = await client.PostAsync(url, content, cancellationToken);
 
         sw.Stop();
 
@@ -748,7 +739,7 @@ internal class GameApiClient : IGameApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
+        logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
 
         return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseMessage);
     }
@@ -759,8 +750,8 @@ internal class GameApiClient : IGameApiClient
 
         var sw = Stopwatch.StartNew();
 
-        _client.DefaultRequestHeaders.Add("X-ACCESS-TOKEN", accessToken);
-        var httpResponseMessage = await _client.GetAsync(apiUrl, cancellationToken);
+        client.DefaultRequestHeaders.Add("X-ACCESS-TOKEN", accessToken);
+        var httpResponseMessage = await client.GetAsync(apiUrl, cancellationToken);
 
         sw.Stop();
 
@@ -788,7 +779,7 @@ internal class GameApiClient : IGameApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
+        logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
 
         return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseMessage);
     }
@@ -799,8 +790,8 @@ internal class GameApiClient : IGameApiClient
 
         var sw = Stopwatch.StartNew();
 
-        _client.DefaultRequestHeaders.Add("X-ACCESS-TOKEN", accessToken);
-        var httpResponseMessage = await _client.DeleteAsync(apiUrl, cancellationToken);
+        client.DefaultRequestHeaders.Add("X-ACCESS-TOKEN", accessToken);
+        var httpResponseMessage = await client.DeleteAsync(apiUrl, cancellationToken);
 
         sw.Stop();
 
@@ -828,7 +819,7 @@ internal class GameApiClient : IGameApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
+        logger.LogInformation("{logEvent}", JsonSerializer.Serialize(logEvent));
 
         return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseMessage);
     }

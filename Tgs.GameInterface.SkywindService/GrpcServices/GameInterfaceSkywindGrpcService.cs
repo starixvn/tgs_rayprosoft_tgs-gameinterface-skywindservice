@@ -6,43 +6,20 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameInterface.SkywindService.GrpcServices;
 
-public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameInterfaceSkywindServiceBase
+public class GameInterfaceSkywindGrpcService(
+    ILogger<GameInterfaceSkywindGrpcService> logger,
+    IGetService<FundInQuery, FundInResult> fundInService,
+    IGetService<FundOutQuery, FundOutResult> fundOutService,
+    IGetService<FundStatusQuery, FundStatusResult> fundStatusService,
+    IQueryService<GameHistory3rdPartyQuery, GameHistoryResult> gameHistory3rdPartyService,
+    IQueryService<GameHistoryBySettleQuery, GameHistoryResult> gameHistoryBySettleService,
+    IGetService<GameUrlQuery, GameUrlResult> gameUrlService,
+    IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
+    ICommandService<PlayerCreateCommand> playerCreateService) : GameInterfaceSkywindService.GameInterfaceSkywindServiceBase
 {
-    private readonly ILogger<GameInterfaceSkywindGrpcService> _logger;
-    private readonly IGetService<FundInQuery, FundInResult> _fundInService;
-    private readonly IGetService<FundOutQuery, FundOutResult> _fundOutService;
-    private readonly IGetService<FundStatusQuery, FundStatusResult> _fundStatusService;
-    private readonly IQueryService<GameHistory3rdPartyQuery, GameHistoryResult> _gameHistory3RdPartyService;
-    private readonly IQueryService<GameHistoryBySettleQuery, GameHistoryResult> _gameHistoryBySettleService;
-    private readonly IGetService<GameUrlQuery, GameUrlResult> _gameUrlService;
-    private readonly IGetService<PlayerBalanceQuery, PlayerBalanceResult> _playerBalanceService;
-    private readonly ICommandService<PlayerCreateCommand> _playerCreateService;
-
-    public GameInterfaceSkywindGrpcService(
-        ILogger<GameInterfaceSkywindGrpcService> logger,
-        IGetService<FundInQuery, FundInResult> fundInService,
-        IGetService<FundOutQuery, FundOutResult> fundOutService,
-        IGetService<FundStatusQuery, FundStatusResult> fundStatusService,
-        IQueryService<GameHistory3rdPartyQuery, GameHistoryResult> gameHistory3rdPartyService,
-        IQueryService<GameHistoryBySettleQuery, GameHistoryResult> gameHistoryBySettleService,
-        IGetService<GameUrlQuery, GameUrlResult> gameUrlService,
-        IGetService<PlayerBalanceQuery, PlayerBalanceResult> playerBalanceService,
-        ICommandService<PlayerCreateCommand> playerCreateService)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _fundInService = fundInService ?? throw new ArgumentNullException(nameof(fundInService));
-        _fundOutService = fundOutService ?? throw new ArgumentNullException(nameof(fundOutService));
-        _fundStatusService = fundStatusService ?? throw new ArgumentNullException(nameof(fundStatusService));
-        _gameHistory3RdPartyService = gameHistory3rdPartyService ?? throw new ArgumentNullException(nameof(gameHistory3rdPartyService));
-        _gameHistoryBySettleService = gameHistoryBySettleService ?? throw new ArgumentNullException(nameof(gameHistoryBySettleService));
-        _gameUrlService = gameUrlService ?? throw new ArgumentNullException(nameof(gameUrlService));
-        _playerBalanceService = playerBalanceService ?? throw new ArgumentNullException(nameof(playerBalanceService));
-        _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
-    }
-
     public override Task<CheckingServiceReply> CheckingService(CheckingServiceRequest request, ServerCallContext context)
     {
-        _logger.LogWarning("LogOn:{logOn} Message: Create a check connection.({machineName})", DateTime.Now.ToString("o"), request.MachineName);
+        logger.LogWarning("LogOn:{logOn} Message: Create a check connection.({machineName})", DateTime.Now.ToString("o"), request.MachineName);
 
         return Task.FromResult(new CheckingServiceReply
         {
@@ -62,7 +39,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.Currency,
             request.Amount);
 
-        var result = await _fundInService
+        var result = await fundInService
                     .GetAsync(
                         query,
                         context.CancellationToken)
@@ -91,7 +68,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.Currency,
             request.Amount);
 
-        var result = await _fundOutService
+        var result = await fundOutService
                     .GetAsync(
                         query,
                         context.CancellationToken)
@@ -117,7 +94,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.Password,
             request.ExtTrxId);
 
-        var result = await _fundStatusService
+        var result = await fundStatusService
                     .GetAsync(
                         query,
                         context.CancellationToken)
@@ -142,7 +119,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.Offset,
             request.Limit);
 
-        var results = await _gameHistory3RdPartyService
+        var results = await gameHistory3rdPartyService
                     .QueryAsync(
                         query,
                         context.CancellationToken)
@@ -151,7 +128,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
 
         var reply = new GameRecordReply();
 
-        if (results.Any())
+        if (results.Length != 0)
         {
             foreach (var result in results)
             {
@@ -188,7 +165,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.Offset,
             request.Limit);
 
-        var results = await _gameHistoryBySettleService
+        var results = await gameHistoryBySettleService
                     .QueryAsync(
                         query,
                         context.CancellationToken)
@@ -197,7 +174,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
 
         var reply = new GameRecordReply();
 
-        if (results.Any())
+        if (results.Length != 0)
         {
             foreach (var result in results)
             {
@@ -233,7 +210,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.GameCode,
             request.Language);
 
-        var result = await _gameUrlService
+        var result = await gameUrlService
                     .GetAsync(
                         query,
                         context.CancellationToken)
@@ -255,7 +232,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.Password,
             request.PlayerCode);
 
-        var result = await _playerBalanceService
+        var result = await playerBalanceService
                     .GetAsync(
                         query,
                         context.CancellationToken)
@@ -278,7 +255,7 @@ public class GameInterfaceSkywindGrpcService : GameInterfaceSkywindService.GameI
             request.PlayerCode,
             request.Currency);
 
-        await _playerCreateService
+        await playerCreateService
                 .ExecuteAsync(
                     query,
                     context.CancellationToken)
