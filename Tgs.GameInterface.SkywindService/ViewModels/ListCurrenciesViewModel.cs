@@ -2,6 +2,6 @@
 
 public record ListCurrenciesViewModel
 {
-    public Uri ApiUrl { get; init; } = default!;
-    public string AccessToken { get; init; } = default!;
+	public Uri ApiUrl { get; init; } = default!;
+	public string AccessToken { get; init; } = default!;
 }

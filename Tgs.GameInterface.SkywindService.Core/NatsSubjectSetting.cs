@@ -2,7 +2,7 @@
 
 public class NatsSubjectSetting
 {
-    public string Subject { get; set; } = default!;
+	public string Subject { get; set; } = default!;
 
-    public string Group { get; set; } = default!;
+	public string Group { get; set; } = default!;
 }

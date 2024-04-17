@@ -2,5 +2,5 @@
 
 public class NatsSetting
 {
-    public NatsSubjectSetting Accesstoken { get; set; } = default!;
+	public NatsSubjectSetting Accesstoken { get; set; } = default!;
 }

@@ -1,5 +1,5 @@
 ﻿namespace Tgs.GameInterface.SkywindService.ViewModels;
 
 public record PlayerBalanceResultViewModel(
-    bool IsPlayer,
-    decimal Balance);
+	bool IsPlayer,
+	decimal Balance);

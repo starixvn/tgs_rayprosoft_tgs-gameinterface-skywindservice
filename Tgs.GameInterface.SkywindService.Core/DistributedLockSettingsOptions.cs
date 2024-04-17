@@ -2,7 +2,7 @@
 
 public class DistributedLockSettingsOptions
 {
-    public string LockPrefixKey { get; init; } = default!;
+	public string LockPrefixKey { get; init; } = default!;
 
-    public double LockMinutes { get; init; }
+	public double LockMinutes { get; init; }
 }

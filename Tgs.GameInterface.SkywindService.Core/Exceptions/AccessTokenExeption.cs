@@ -2,7 +2,7 @@
 
 public class AccessTokenExeption : Exception
 {
-    public AccessTokenExeption() : base("Failed to get AccessToken")
-    {
-    }
+	public AccessTokenExeption() : base("Failed to get AccessToken")
+	{
+	}
 }

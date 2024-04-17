@@ -2,7 +2,7 @@
 
 public interface IDistributedLock
 {
-    ValueTask<bool> LockingAsync(string acction);
+	ValueTask<bool> LockingAsync(string acction);
 
-    void Release(string acction);
+	void Release(string acction);
 }

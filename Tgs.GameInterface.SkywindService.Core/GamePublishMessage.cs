@@ -7,23 +7,23 @@ using Tgs.MessageQueue;
 namespace Tgs.GameInterface.SkywindService.Core;
 
 internal class GamePublishMessage(
-    ILogger<GamePublishMessage> logger,
-    IOptions<GameInterfaceSettingOptions> options,
-    IMessageSender messageSender) : IGamePublishMessage
+	ILogger<GamePublishMessage> logger,
+	IOptions<GameInterfaceSettingOptions> options,
+	IMessageSender messageSender) : IGamePublishMessage
 {
-    private readonly GameInterfaceSettingOptions _gameInterfaceSetting = options.Value;
+	private readonly GameInterfaceSettingOptions _gameInterfaceSetting = options.Value;
 
-    public async ValueTask AccessTokenPublishMessageAsync(AccessTokenMessageRequest request, CancellationToken cancellationToken = default)
-    {
-        await messageSender.PublishAsync(
-            subject: _gameInterfaceSetting.NatsSetting.Accesstoken.Subject,
-            data: request.ToByteArray(),
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+	public async ValueTask AccessTokenPublishMessageAsync(AccessTokenMessageRequest request, CancellationToken cancellationToken = default)
+	{
+		await messageSender.PublishAsync(
+			subject: _gameInterfaceSetting.NatsSetting.Accesstoken.Subject,
+			data: request.ToByteArray(),
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-        logger.LogInformation("LogOn:{logOn} Subject:{subject} Information Sending:{request}",
-            DateTime.Now.ToString("o"),
-            _gameInterfaceSetting.NatsSetting.Accesstoken.Subject,
-            request);
-    }
+		logger.LogInformation("LogOn:{logOn} Subject:{subject} Information Sending:{request}",
+			DateTime.Now.ToString("o"),
+			_gameInterfaceSetting.NatsSetting.Accesstoken.Subject,
+			request);
+	}
 }
