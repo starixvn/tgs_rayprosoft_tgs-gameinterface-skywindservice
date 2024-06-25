@@ -15,10 +15,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Protos\gameinterfaceskywindservice.proto" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="FluentdForward.OpenTelemetry.MessagePack" Version="0.3.8" />
 		<PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
@@ -40,10 +36,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Tgs.GameInterface.SkywindService.Common\Tgs.GameInterface.SkywindService.Common.csproj" />
 		<ProjectReference Include="..\Tgs.GameInterface.SkywindService.Core\Tgs.GameInterface.SkywindService.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Protobuf Include="Protos\gameinterfaceskywindservice.proto" GrpcServices="Server" />
+		<ProjectReference Include="..\Tgs.GameInterface.SkywindService.Protos\Tgs.GameInterface.SkywindService.Protos.csproj" />
 	</ItemGroup>
 
 </Project>

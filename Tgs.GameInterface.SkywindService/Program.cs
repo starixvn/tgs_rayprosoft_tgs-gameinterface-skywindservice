@@ -1,6 +1,7 @@
 ﻿using System.Net.Mime;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using NATS.Client.Core;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -8,6 +9,7 @@ using Tgs.GameInterface.SkywindService;
 using Tgs.GameInterface.SkywindService.Core;
 using Tgs.GameInterface.SkywindService.GrpcServices;
 using Tgs.GameInterface.SkywindService.MessageHandlers;
+using Tgs.MessageQueue.Nats.Serializers;
 
 var filterInstrumentations = new[] { "html", "ico", "png", "jpg" };
 
@@ -51,10 +53,7 @@ builder.Services
 		options.Filters.Add(new ProducesAttribute(MediaTypeNames.Application.Json));
 		options.Filters.Add(new ConsumesAttribute(MediaTypeNames.Application.Json));
 	})
-	.AddJsonOptions(options =>
-	{
-		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-	});
+	.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -86,16 +85,17 @@ builder.Services.AddGameInterfaceService(
 var gameInterfaceSetting = builder.Configuration.GetSection("GameInterfaceSetting").Get<GameInterfaceSettingOptions>()!;
 
 builder.Services
+	.AddKeyedSingleton("Nats", (sp, _) => new NatsConnection(NatsOpts.Default with
+	{
+		Url = builder.Configuration.GetConnectionString("Nats")!,
+		SerializerRegistry = TgsNatsSerializerRegistration.Default
+	}))
 	.AddMessageQueue()
-	 .AddNatsMessageQueue(natsConfig => _ = natsConfig
-		 .ConfigQueueOptions((options, sp) =>
-		 {
-			 var configuration = sp.GetRequiredService<IConfiguration>();
-			 options.Url = configuration.GetConnectionString("Nats")!;
-		 })
-		 .AddHandler<AccessTokenMessageHandler>(gameInterfaceSetting.NatsSetting.Accesstoken.Subject, gameInterfaceSetting.NatsSetting.Accesstoken.Group))
-	 .ClearAllExchanges()
-	 .AddNatsGlobPatternExchange(gameInterfaceSetting.NatsSetting.Accesstoken.Subject);
+	.AddNatsMessageQueue(config => config
+		.ConfigureResolveConnection(sp => sp.GetRequiredKeyedService<NatsConnection>("Nats"))
+		.AddHandler<AccessTokenMessageHandler>(gameInterfaceSetting.NatsSetting.Accesstoken.Subject, gameInterfaceSetting.NatsSetting.Accesstoken.Group))
+	.ClearAllExchanges()
+	.AddNatsGlobPatternExchange(gameInterfaceSetting.NatsSetting.Accesstoken.Subject);
 
 builder.Services
 	.AddOpenTelemetry()
