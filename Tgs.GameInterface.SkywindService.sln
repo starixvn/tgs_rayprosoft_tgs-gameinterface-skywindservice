@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameInterface.SkywindService.Client", "Tgs.GameInterface.SkywindService.Client\Tgs.GameInterface.SkywindService.Client.csproj", "{F273F91E-EDCF-443C-9C0F-24E62AC14E08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameInterface.SkywindService.Protos", "Tgs.GameInterface.SkywindService.Protos\Tgs.GameInterface.SkywindService.Protos.csproj", "{D2CB693F-1404-4ECE-AFF4-14F45631CE1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F273F91E-EDCF-443C-9C0F-24E62AC14E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F273F91E-EDCF-443C-9C0F-24E62AC14E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F273F91E-EDCF-443C-9C0F-24E62AC14E08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2CB693F-1404-4ECE-AFF4-14F45631CE1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2CB693F-1404-4ECE-AFF4-14F45631CE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2CB693F-1404-4ECE-AFF4-14F45631CE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2CB693F-1404-4ECE-AFF4-14F45631CE1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

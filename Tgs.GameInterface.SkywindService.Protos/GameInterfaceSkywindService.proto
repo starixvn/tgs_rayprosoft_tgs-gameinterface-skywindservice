@@ -5,7 +5,7 @@ import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Tgs.GameInterface.SkywindService.Protos";
 
-package gameinterfaceskywindservice;
+package GameInterfaceSkywindService;
 
 // The greeting service definition.
 service GameInterfaceSkywindService {

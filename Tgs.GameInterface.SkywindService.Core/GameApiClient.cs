@@ -449,7 +449,7 @@ internal class GameApiClient(
 			}
 		}
 
-		var rounds = JsonSerializer.Deserialize<IEnumerable<RoundResponse>>(ResponseMessage) ?? Enumerable.Empty<RoundResponse>();
+		var rounds = JsonSerializer.Deserialize<IEnumerable<RoundResponse>>(ResponseMessage) ?? [];
 
 		if (!rounds.Any())
 		{
@@ -510,7 +510,7 @@ internal class GameApiClient(
 			}
 		}
 
-		var rounds = JsonSerializer.Deserialize<IEnumerable<RoundResponse>>(ResponseMessage) ?? Enumerable.Empty<RoundResponse>();
+		var rounds = JsonSerializer.Deserialize<IEnumerable<RoundResponse>>(ResponseMessage) ?? [];
 
 		if (!rounds.Any())
 		{
@@ -569,7 +569,7 @@ internal class GameApiClient(
 			}
 		}
 
-		var rounds = JsonSerializer.Deserialize<IEnumerable<Round3rdPartyResponse>>(ResponseMessage) ?? Enumerable.Empty<Round3rdPartyResponse>();
+		var rounds = JsonSerializer.Deserialize<IEnumerable<Round3rdPartyResponse>>(ResponseMessage) ?? [];
 
 		if (!rounds.Any())
 		{

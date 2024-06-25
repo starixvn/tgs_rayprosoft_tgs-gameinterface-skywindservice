@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tgs.GameInterface.SkywindService.Common.Protos;
 using Tgs.MessageQueue;
+using Valhalla.MessageQueue;
 
 namespace Tgs.GameInterface.SkywindService.Core;
 
@@ -17,7 +18,7 @@ internal class GamePublishMessage(
 	{
 		await messageSender.PublishAsync(
 			subject: _gameInterfaceSetting.NatsSetting.Accesstoken.Subject,
-			data: request.ToByteArray(),
+			data: request,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
